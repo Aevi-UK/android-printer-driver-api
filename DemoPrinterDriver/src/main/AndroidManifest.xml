@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<manifest package="com.aevi.demoprinterdriver"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <activity
+            android:name=".ui.AndroidPrintActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
+
+        </activity>
+
+        <activity
+            android:name=".ui.PrinterPropertiesActivity"
+            android:label="@string/properties_name"
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="com.aevi.printer.driver.PROPERTIES"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".DemoPrinterDriverService"
+            android:exported="true"
+            android:permission="com.aevi.permission.PRINTER_DRIVER_SERVICE">
+            <intent-filter>
+                <action android:name="com.aevi.printer.driver.SERVICE"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="configuration-authority"
+                android:value="com.aevi.demoprinterdriver.config"/>
+            <meta-data
+                android:name="printer-driver-name"
+                android:value="@string/app_driver_name"/>
+            <meta-data
+                android:name="action-service"
+                android:value="com.aevi.demoprinterdriver.DemoPrinterActionService"/>
+            <meta-data
+                android:name="status-service"
+                android:value="com.aevi.demoprinterdriver.DemoPrinterStatusService"/>
+        </service>
+
+        <service
+            android:name=".DemoPrinterActionService"
+            android:exported="true"
+            android:permission="com.aevi.permission.PRINTER_DRIVER_SERVICE">
+        </service>
+
+        <service
+            android:name=".DemoPrinterStatusService"
+            android:exported="true"
+            android:permission="com.aevi.permission.PRINTER_DRIVER_SERVICE">
+        </service>
+
+        <provider
+            android:name="com.aevi.demoprinterdriver.DemoPrinterSettingsProvider"
+            android:authorities="com.aevi.demoprinterdriver.config"
+            android:exported="true"
+            android:permission="com.aevi.permission.PRINTER_DRIVER_SERVICE"/>
+
+        <meta-data
+            android:name="application-type"
+            android:value="vaa_network"/>
+    </application>
+
+</manifest>
