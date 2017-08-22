@@ -20,11 +20,6 @@ import com.aevi.print.driver.BasePrinterSettingsProvider;
 public class DemoPrinterSettingsProvider extends BasePrinterSettingsProvider {
 
     @Override
-    protected PrinterSettings getPrinterSettings(String printerId) {
-        return null;
-    }
-
-    @Override
     protected PrinterSettings[] getPrintersSettings() {
         return PrinterSettingsHolder.getInstance().getPrinterSettings();
     }
