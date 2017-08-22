@@ -30,7 +30,7 @@ public class PrinterStatusStream {
 
     private final BasePrinterStatusService service;
 
-    PrinterStatusStream(BasePrinterStatusService service) {
+    public PrinterStatusStream(BasePrinterStatusService service) {
         this.service = service;
     }
 
@@ -48,7 +48,7 @@ public class PrinterStatusStream {
         }
     }
 
-    void subscribeToStatus(final PrinterStatusRequest statusRequest) {
+    public void subscribeToStatus(final PrinterStatusRequest statusRequest) {
         synchronized (PRINTER_STATUS_STREAM_MAP) {
             PublishSubject<PrinterStatus> printerStatusStream;
             if (PRINTER_STATUS_STREAM_MAP.containsKey(statusRequest.getPrinterId())) {

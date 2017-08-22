@@ -16,7 +16,7 @@ ext {
     robolectricVersion = '3.3.2'
     assertJVersion = '2.7.0'
 
-    printApiVersion = '0.0.4'
+    printApiVersion = '0.0.5-SNAPSHOT'
 
     presentationDependencies = [
             butterKnife      : "com.jakewharton:butterknife:$butterKnifeVersion",
