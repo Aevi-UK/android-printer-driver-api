@@ -19,7 +19,7 @@ public class PrinterSettingsBuilder {
 
     private String printerId;
     private int paperWidth;
-    private int printerResolution;
+    private PrinterFont[] printerFonts;
     private PaperKind paperKind;
     private int[] codePages;
     private String[] commands;
@@ -27,6 +27,7 @@ public class PrinterSettingsBuilder {
     private boolean doesReportStatus = false;
     private boolean canHandleCommands = false;
     private boolean doesSupportCodepages = false;
+    private String[] supportedLanguages;
 
     public PrinterSettingsBuilder withPrinterId(String printerId) {
         this.printerId = printerId;
@@ -38,8 +39,8 @@ public class PrinterSettingsBuilder {
         return this;
     }
 
-    public PrinterSettingsBuilder withPrinterResolution(int printerResolution) {
-        this.printerResolution = printerResolution;
+    public PrinterSettingsBuilder withPrinterFonts(PrinterFont[] printerFonts) {
+        this.printerFonts = printerFonts;
         return this;
     }
 
@@ -78,7 +79,13 @@ public class PrinterSettingsBuilder {
         return this;
     }
 
+    public PrinterSettingsBuilder withSupportedLanguages(String[] supportedLanguages) {
+        this.supportedLanguages = supportedLanguages;
+        return this;
+    }
+
     public PrinterSettings build() {
-        return new PrinterSettings(printerId, paperWidth, printerResolution, paperKind, canHandleCommands, commands, doesReportStatus, codePages, doesSupportCodepages, options);
+        return new PrinterSettings(printerId, paperWidth, paperKind, printerFonts, canHandleCommands, commands, doesReportStatus, codePages,
+                doesSupportCodepages, options, supportedLanguages);
     }
 }
