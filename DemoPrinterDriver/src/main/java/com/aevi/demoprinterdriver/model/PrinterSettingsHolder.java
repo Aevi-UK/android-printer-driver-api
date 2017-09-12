@@ -36,10 +36,7 @@ public class PrinterSettingsHolder {
 
     public PrinterSettings[] getPrinterSettings() {
         return new PrinterSettings[]{
-                new PrinterSettingsBuilder()
-                        .withPrinterId("DemoPrinter:" + Build.SERIAL)
-                        .withPaperWidth(400)
-                        .withPrinterResolution(300)
+                new PrinterSettingsBuilder("DemoPrinter:" + Build.SERIAL, 80, 75, 7.68f)
                         .withPaperKind(PaperKind.STANDARD)
                         .build()
         };

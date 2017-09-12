@@ -27,7 +27,7 @@ import com.aevi.print.model.PrinterSettingsList;
 
 /**
  * ContentProvider base class that should be extended by printer driver providers in order to give information as to the capabilities of printers.
- * The implementing class will need to provide an implementation of the {@link #getPrinterSettings(String)} and {@link #getPrintersSettings()}}
+ * The implementing class will need to provide an implementation of the {@link #getPrintersSettings()}}
  * methods that should return the configuration of the printers. If this configuration is dynamic and changes then the implementing class should call
  * {@link #notifyConfigurationChange()} on any changes so that the new configuration can be obtained by the Printer Control Service.
  *
@@ -48,8 +48,7 @@ public abstract class BasePrinterSettingsProvider extends ContentProvider {
     public static final String ACTION_BROADCAST_CONFIG_CHANGE = "com.aevi.intent.action.PRINTER_DRIVER_CONFIG_CHANGE";
     public static final String CONFIGURATION_KEY = "configuration";
 
-    public static final String METHOD_SINGLE = "printer";
-    public static final String METHOD_ALL = "all";
+     public static final String METHOD_ALL = "all";
 
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         throw new UnsupportedOperationException();
@@ -83,17 +82,12 @@ public abstract class BasePrinterSettingsProvider extends ContentProvider {
 
         Bundle b = new Bundle();
         switch (method) {
-            case METHOD_SINGLE:
-                b.putString(CONFIGURATION_KEY, JsonConverter.serialize(getPrinterSettings(arg)));
-                break;
             case METHOD_ALL:
                 b.putString(CONFIGURATION_KEY, JsonConverter.serialize(new PrinterSettingsList(getPrintersSettings())));
                 break;
         }
         return b;
     }
-
-    protected abstract PrinterSettings getPrinterSettings(String printerId);
 
     protected abstract PrinterSettings[] getPrintersSettings();
 

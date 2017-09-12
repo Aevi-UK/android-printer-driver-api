@@ -17,9 +17,14 @@ import java.util.Map;
 
 public class PrinterSettingsBuilder {
 
-    private String printerId;
-    private int paperWidth;
-    private int printerResolution;
+    // required variables
+    private final String printerId;
+    private final int paperWidth;
+    private final int printableWidth;
+    private final float paperDotsPmm;
+
+    // Optional variables
+    private PrinterFont[] printerFonts;
     private PaperKind paperKind;
     private int[] codePages;
     private String[] commands;
@@ -27,19 +32,17 @@ public class PrinterSettingsBuilder {
     private boolean doesReportStatus = false;
     private boolean canHandleCommands = false;
     private boolean doesSupportCodepages = false;
+    private String[] supportedLanguages;
 
-    public PrinterSettingsBuilder withPrinterId(String printerId) {
+    public PrinterSettingsBuilder(String printerId, int paperWidth, int printableWidth, float paperDotsPmm) {
         this.printerId = printerId;
-        return this;
-    }
-
-    public PrinterSettingsBuilder withPaperWidth(int paperWidth) {
         this.paperWidth = paperWidth;
-        return this;
+        this.printableWidth = printableWidth;
+        this.paperDotsPmm = paperDotsPmm;
     }
 
-    public PrinterSettingsBuilder withPrinterResolution(int printerResolution) {
-        this.printerResolution = printerResolution;
+    public PrinterSettingsBuilder withPrinterFonts(PrinterFont[] printerFonts) {
+        this.printerFonts = printerFonts;
         return this;
     }
 
@@ -78,7 +81,15 @@ public class PrinterSettingsBuilder {
         return this;
     }
 
+    public PrinterSettingsBuilder withSupportedLanguages(String[] supportedLanguages) {
+        this.supportedLanguages = supportedLanguages;
+        return this;
+    }
+
     public PrinterSettings build() {
-        return new PrinterSettings(printerId, paperWidth, printerResolution, paperKind, canHandleCommands, commands, doesReportStatus, codePages, doesSupportCodepages, options);
+        return new PrinterSettings(printerId, paperWidth, printableWidth, paperDotsPmm, paperKind, printerFonts, canHandleCommands, commands,
+                doesReportStatus,
+                codePages,
+                doesSupportCodepages, options, supportedLanguages);
     }
 }
