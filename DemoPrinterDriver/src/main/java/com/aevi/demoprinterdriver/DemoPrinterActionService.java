@@ -18,7 +18,7 @@ import com.aevi.print.driver.BasePrinterActionService;
 public class DemoPrinterActionService extends BasePrinterActionService {
 
     @Override
-    protected void action(String action) {
+    protected void action(String printerId, String action) {
 
     }
 }

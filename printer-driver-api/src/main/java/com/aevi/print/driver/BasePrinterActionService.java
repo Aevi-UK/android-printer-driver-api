@@ -28,10 +28,10 @@ public abstract class BasePrinterActionService extends AbstractMessengerService<
 
     @Override
     protected void handleRequest(PrintAction action, String packageName) {
-        action(action.getAction());
+        action(action.getPrinterId(), action.getAction());
     }
 
-    protected abstract void action(String action);
+    protected abstract void action(String printerId, String action);
 
     protected void actionComplete(PrintAction action) {
         sendEndStreamMessageToClient(action.getId());
