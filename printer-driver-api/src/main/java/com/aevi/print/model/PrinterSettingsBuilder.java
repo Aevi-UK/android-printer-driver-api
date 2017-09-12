@@ -17,8 +17,13 @@ import java.util.Map;
 
 public class PrinterSettingsBuilder {
 
-    private String printerId;
-    private int paperWidth;
+    // required variables
+    private final String printerId;
+    private final int paperWidth;
+    private final int printableWidth;
+    private final float paperDotsPmm;
+
+    // Optional variables
     private PrinterFont[] printerFonts;
     private PaperKind paperKind;
     private int[] codePages;
@@ -29,14 +34,11 @@ public class PrinterSettingsBuilder {
     private boolean doesSupportCodepages = false;
     private String[] supportedLanguages;
 
-    public PrinterSettingsBuilder withPrinterId(String printerId) {
+    public PrinterSettingsBuilder(String printerId, int paperWidth, int printableWidth, float paperDotsPmm) {
         this.printerId = printerId;
-        return this;
-    }
-
-    public PrinterSettingsBuilder withPaperWidth(int paperWidth) {
         this.paperWidth = paperWidth;
-        return this;
+        this.printableWidth = printableWidth;
+        this.paperDotsPmm = paperDotsPmm;
     }
 
     public PrinterSettingsBuilder withPrinterFonts(PrinterFont[] printerFonts) {
@@ -85,7 +87,9 @@ public class PrinterSettingsBuilder {
     }
 
     public PrinterSettings build() {
-        return new PrinterSettings(printerId, paperWidth, paperKind, printerFonts, canHandleCommands, commands, doesReportStatus, codePages,
+        return new PrinterSettings(printerId, paperWidth, printableWidth, paperDotsPmm, paperKind, printerFonts, canHandleCommands, commands,
+                doesReportStatus,
+                codePages,
                 doesSupportCodepages, options, supportedLanguages);
     }
 }
