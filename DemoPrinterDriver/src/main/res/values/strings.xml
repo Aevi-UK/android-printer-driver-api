@@ -1,8 +1,0 @@
-<resources>
-    <string name="app_name">DemoPrinterDriverApplication</string>
-    <string name="app_driver_name">Demo Printer Driver</string>
-    <string name="properties_name">Demo Printer Properties</string>
-
-    <string name="printer_id_title">Displaying properties for printer</string>
-    <string name="printer_id">[Printer Id Not Given]</string>
-</resources>
