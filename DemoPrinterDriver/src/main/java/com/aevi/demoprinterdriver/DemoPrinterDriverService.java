@@ -40,7 +40,7 @@ public class DemoPrinterDriverService extends BasePrinterDriverService {
 
     @Override
     protected void print(final PrintPayload payload) {
-        Log.d(TAG, "Got print request: " + payload.getId());
+        Log.d(TAG, "Got print request: " + payload.getPrinterId());
         PrinterSettings[] printerSettings = PrinterSettingsHolder.getInstance().getPrinterSettings();
 
         Intent intent = new Intent(getBaseContext(), AndroidPrintActivity.class);

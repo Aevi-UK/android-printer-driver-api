@@ -48,7 +48,7 @@ public class PrinterStatusStream {
         }
     }
 
-    public void subscribeToStatus(final PrinterStatusRequest statusRequest) {
+    protected void subscribeToStatus(final PrinterStatusRequest statusRequest) {
         synchronized (PRINTER_STATUS_STREAM_MAP) {
             PublishSubject<PrinterStatus> printerStatusStream;
             if (PRINTER_STATUS_STREAM_MAP.containsKey(statusRequest.getPrinterId())) {
