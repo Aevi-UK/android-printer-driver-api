@@ -14,13 +14,26 @@
 package com.aevi.demoprinterdriver;
 
 import com.aevi.demoprinterdriver.model.PrinterSettingsHolder;
-import com.aevi.print.model.PrinterSettings;
 import com.aevi.print.driver.BasePrinterSettingsProvider;
+import com.aevi.print.model.DriverProperties;
+import com.aevi.print.model.PrinterSettings;
 
 public class DemoPrinterSettingsProvider extends BasePrinterSettingsProvider {
+
+    private final DriverProperties driverProperties;
+
+    public DemoPrinterSettingsProvider() {
+        driverProperties = new DriverProperties();
+        driverProperties.setEditableSettings(true);
+    }
 
     @Override
     protected PrinterSettings[] getPrintersSettings() {
         return PrinterSettingsHolder.getInstance().getPrinterSettings();
+    }
+
+    @Override
+    protected DriverProperties getDriverProperties() {
+        return driverProperties;
     }
 }

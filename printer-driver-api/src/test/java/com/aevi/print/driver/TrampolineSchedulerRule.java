@@ -22,7 +22,6 @@ import io.reactivex.functions.Function;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 
-
 public class TrampolineSchedulerRule implements TestRule {
 
     @Override
