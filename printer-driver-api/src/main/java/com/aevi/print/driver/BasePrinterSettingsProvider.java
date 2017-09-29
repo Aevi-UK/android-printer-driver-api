@@ -22,6 +22,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.aevi.android.rxmessenger.JsonConverter;
+import com.aevi.print.model.DriverProperties;
 import com.aevi.print.model.PrinterSettings;
 import com.aevi.print.model.PrinterSettingsList;
 
@@ -47,8 +48,10 @@ public abstract class BasePrinterSettingsProvider extends ContentProvider {
     private static final String READ_PRINTER_CONFIGURATION = "com.aevi.permission.READ_PRINTER_CONFIGURATION";
     public static final String ACTION_BROADCAST_CONFIG_CHANGE = "com.aevi.intent.action.PRINTER_DRIVER_CONFIG_CHANGE";
     public static final String CONFIGURATION_KEY = "configuration";
+    public static final String PROPERTIES_KEY = "properties";
 
-     public static final String METHOD_ALL = "all";
+    public static final String METHOD_ALL = "all";
+    public static final String METHOD_DRIVER_PROPERTIES = "driver-properties";
 
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         throw new UnsupportedOperationException();
@@ -85,11 +88,16 @@ public abstract class BasePrinterSettingsProvider extends ContentProvider {
             case METHOD_ALL:
                 b.putString(CONFIGURATION_KEY, JsonConverter.serialize(new PrinterSettingsList(getPrintersSettings())));
                 break;
+            case METHOD_DRIVER_PROPERTIES:
+                b.putString(PROPERTIES_KEY,  JsonConverter.serialize(getDriverProperties()));
+                break;
         }
         return b;
     }
 
     protected abstract PrinterSettings[] getPrintersSettings();
+
+    protected abstract DriverProperties getDriverProperties();
 
     public void notifyConfigurationChange() {
         String pkg = "package:" + getContext().getPackageName();
