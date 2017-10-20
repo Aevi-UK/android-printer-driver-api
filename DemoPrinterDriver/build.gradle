@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
-ext.demoVersionCode = 3
-ext.demoVersion = "0.0.1-ALPHA"
+ext.demoVersionCode = 4
+ext.demoVersion = "1.0.0"
 
 android {
     compileSdkVersion projectTargetSdkVersion
