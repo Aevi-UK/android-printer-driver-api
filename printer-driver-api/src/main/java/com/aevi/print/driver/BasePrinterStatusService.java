@@ -14,23 +14,20 @@
 package com.aevi.print.driver;
 
 import com.aevi.android.rxmessenger.AbstractMessengerService;
-import com.aevi.print.model.PrinterStatus;
-import com.aevi.print.model.PrinterStatusRequest;
 
 /**
  * This abstract service should be extended to provide a print driver status implementation
  */
-public abstract class BasePrinterStatusService extends AbstractMessengerService<PrinterStatusRequest, PrinterStatus> {
+public abstract class BasePrinterStatusService extends AbstractMessengerService {
 
     private PrinterStatusStream printerStatusStream;
 
     protected BasePrinterStatusService() {
-        super(PrinterStatusRequest.class);
         printerStatusStream = new PrinterStatusStream(this);
     }
 
     @Override
-    protected void handleRequest(PrinterStatusRequest statusRequest, String packageName) {
-        printerStatusStream.subscribeToStatus(statusRequest);
+    protected void handleRequest(String clientId, String statusRequest, String packageName) {
+        printerStatusStream.subscribeToStatus(clientId, statusRequest);
     }
 }

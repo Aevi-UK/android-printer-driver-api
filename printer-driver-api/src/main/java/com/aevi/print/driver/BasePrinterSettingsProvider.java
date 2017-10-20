@@ -21,7 +21,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.aevi.android.rxmessenger.JsonConverter;
+import com.aevi.print.json.JsonConverter;
 import com.aevi.print.model.DriverProperties;
 import com.aevi.print.model.PrinterSettings;
 import com.aevi.print.model.PrinterSettingsList;

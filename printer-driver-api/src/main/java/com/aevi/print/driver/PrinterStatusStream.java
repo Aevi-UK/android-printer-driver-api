@@ -14,7 +14,6 @@
 package com.aevi.print.driver;
 
 import com.aevi.print.model.PrinterStatus;
-import com.aevi.print.model.PrinterStatusRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,14 +47,14 @@ public class PrinterStatusStream {
         }
     }
 
-    protected void subscribeToStatus(final PrinterStatusRequest statusRequest) {
+    protected void subscribeToStatus(final String clientId, final String printerId) {
         synchronized (PRINTER_STATUS_STREAM_MAP) {
             PublishSubject<PrinterStatus> printerStatusStream;
-            if (PRINTER_STATUS_STREAM_MAP.containsKey(statusRequest.getPrinterId())) {
-                printerStatusStream = PRINTER_STATUS_STREAM_MAP.get(statusRequest.getPrinterId());
+            if (PRINTER_STATUS_STREAM_MAP.containsKey(printerId)) {
+                printerStatusStream = PRINTER_STATUS_STREAM_MAP.get(printerId);
             } else {
                 printerStatusStream = PublishSubject.create();
-                PRINTER_STATUS_STREAM_MAP.put(statusRequest.getPrinterId(), printerStatusStream);
+                PRINTER_STATUS_STREAM_MAP.put(printerId, printerStatusStream);
             }
 
             printerStatusStream.subscribe(new Observer<PrinterStatus>() {
@@ -68,7 +67,7 @@ public class PrinterStatusStream {
 
                 @Override
                 public void onNext(@NonNull PrinterStatus printerStatus) {
-                    if (!service.sendMessageToClient(statusRequest.getId(), printerStatus)) {
+                    if (!service.sendMessageToClient(clientId, printerStatus.toJson())) {
                         disposable.dispose();
                     }
                 }
@@ -84,7 +83,7 @@ public class PrinterStatusStream {
                 }
 
                 private void finish() {
-                    service.sendEndStreamMessageToClient(statusRequest.getId());
+                    service.sendEndStreamMessageToClient(clientId);
                     disposable.dispose();
                 }
             });

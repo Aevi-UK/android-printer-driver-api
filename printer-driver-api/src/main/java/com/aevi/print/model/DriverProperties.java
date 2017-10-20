@@ -1,9 +1,9 @@
 package com.aevi.print.model;
 
-import com.aevi.android.rxmessenger.JsonConverter;
-import com.aevi.android.rxmessenger.SendableId;
+import com.aevi.print.json.JsonConverter;
+import com.aevi.print.json.Jsonable;
 
-public class DriverProperties extends SendableId {
+public class DriverProperties implements Jsonable {
 
     private boolean editableSettings;
 

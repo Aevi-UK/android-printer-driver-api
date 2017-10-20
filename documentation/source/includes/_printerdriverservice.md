@@ -7,7 +7,7 @@ public class DemoPrinterDriverService extends BasePrinterDriverService {
     private static final String TAG = DemoPrinterDriverService.class.getSimpleName();
 
     @Override
-    protected void print(final PrintPayload payload) {
+    protected void print(String clientId, PrintPayload payload) {
         Log.d(TAG, "Got print request: " + payload.getPrinterId());
 
         try {
@@ -16,14 +16,14 @@ public class DemoPrinterDriverService extends BasePrinterDriverService {
 
             // Use this methods to send printJob status(es) back to the client
             PrintJob printJob = new PrintJob(PRINTED);
-            sendMessageToClient(payload.getId(), printJob);
+            sendMessageToClient(clientId, printJob);
 
             // Use this method to notify the end the printJob
-            sendEndStreamMessageToClient(payload.getId());
+            sendEndStreamMessageToClient(clientId);
         } catch(Exception e) {
 
             // Use this method to notify if an unexpected error has occurred
-            sendErrorMessageToClient(payload.getId(), PrinterMessages.ERROR_PRINT_FAILED,
+            sendErrorMessageToClient(clientId, PrinterMessages.ERROR_PRINT_FAILED,
                 "Failed to print: " + e.getMessage());
         }
     }

@@ -39,7 +39,7 @@ public class DemoPrinterDriverService extends BasePrinterDriverService {
     private static final String TAG = DemoPrinterDriverService.class.getSimpleName();
 
     @Override
-    protected void print(final PrintPayload payload) {
+    protected void print(final String clientId, final PrintPayload payload) {
         Log.d(TAG, "Got print request: " + payload.getPrinterId());
         PrinterSettings[] printerSettings = PrinterSettingsHolder.getInstance().getPrinterSettings();
 
@@ -52,14 +52,14 @@ public class DemoPrinterDriverService extends BasePrinterDriverService {
                 new Consumer<PrintJob>() {
                     @Override
                     public void accept(@NonNull PrintJob printJob) throws Exception {
-                        sendMessageToClient(payload.getId(), printJob);
-                        sendEndStreamMessageToClient(payload.getId());
+                        sendMessageToClient(clientId, printJob.toJson());
+                        sendEndStreamMessageToClient(clientId);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
                         Log.e(TAG, "Print failed", throwable);
-                        sendErrorMessageToClient(payload.getId(), PrinterMessages.ERROR_PRINT_FAILED,
+                        sendErrorMessageToClient(clientId, PrinterMessages.ERROR_PRINT_FAILED,
                                 "Failed to print: " + throwable.getMessage());
                     }
                 });

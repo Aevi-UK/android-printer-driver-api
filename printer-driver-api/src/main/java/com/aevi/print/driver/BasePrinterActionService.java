@@ -14,26 +14,22 @@
 package com.aevi.print.driver;
 
 import com.aevi.android.rxmessenger.AbstractMessengerService;
-import com.aevi.android.rxmessenger.SendableId;
 import com.aevi.print.model.PrintAction;
 
 /**
  * This abstract service should be extended to provide a print action handler service implementation
  */
-public abstract class BasePrinterActionService extends AbstractMessengerService<PrintAction, SendableId> {
-
-    protected BasePrinterActionService() {
-        super(PrintAction.class);
-    }
+public abstract class BasePrinterActionService extends AbstractMessengerService {
 
     @Override
-    protected void handleRequest(PrintAction action, String packageName) {
-        action(action.getPrinterId(), action.getAction());
+    protected void handleRequest(String clientId, String actionData, String packageName) {
+        PrintAction action = PrintAction.fromJson(actionData);
+        action(clientId, action.getPrinterId(), action.getAction());
     }
 
-    protected abstract void action(String printerId, String action);
+    protected abstract void action(String clientId, String printerId, String action);
 
-    protected void actionComplete(PrintAction action) {
-        sendEndStreamMessageToClient(action.getId());
+    protected void actionComplete(String clientId) {
+        sendEndStreamMessageToClient(clientId);
     }
 }
