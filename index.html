@@ -89,7 +89,7 @@
     <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = DemoPrinterDriverService.class.getSimpleName();
 
     <span class="meta">@Override</span>
-    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">final</span> PrintPayload payload)</span> </span>{
+    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(String clientId, PrintPayload payload)</span> </span>{
         Log.d(TAG, <span class="string">"Got print request: "</span> + payload.getPrinterId());
 
         <span class="keyword">try</span> {
@@ -98,14 +98,14 @@
 
             <span class="comment">// Use this methods to send printJob status(es) back to the client</span>
             PrintJob printJob = <span class="keyword">new</span> PrintJob(PRINTED);
-            sendMessageToClient(payload.getId(), printJob);
+            sendMessageToClient(clientId, printJob);
 
             <span class="comment">// Use this method to notify the end the printJob</span>
-            sendEndStreamMessageToClient(payload.getId());
+            sendEndStreamMessageToClient(clientId);
         } <span class="keyword">catch</span>(Exception e) {
 
             <span class="comment">// Use this method to notify if an unexpected error has occurred</span>
-            sendErrorMessageToClient(payload.getId(), PrinterMessages.ERROR_PRINT_FAILED,
+            sendErrorMessageToClient(clientId, PrinterMessages.ERROR_PRINT_FAILED,
                 <span class="string">"Failed to print: "</span> + e.getMessage());
         }
     }
@@ -201,7 +201,7 @@ PrinterStatusStream.emitStatus(<span class="string">"printerId"</span>, PrinterM
               <h1 id="Printer-actions-service"><a href="#Printer-actions-service" class="headerlink" title="Printer actions service"></a>Printer actions service</h1><pre><code class="java highlight"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DemoPrinterActionService</span> <span class="keyword">extends</span> <span class="title">BasePrinterActionService</span> </span>{
 
     <span class="meta">@Override</span>
-    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">action</span><span class="params">(String printerId, String action)</span> </span>{
+    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">action</span><span class="params">(String clientId, String printerId, String action)</span> </span>{
 
     }
 }
