@@ -4,7 +4,7 @@
 public class DemoPrinterActionService extends BasePrinterActionService {
 
     @Override
-    protected void action(String printerId, String action) {
+    protected void action(String clientId, String printerId, String action) {
 
     }
 }
