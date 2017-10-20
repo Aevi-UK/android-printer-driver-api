@@ -20,23 +20,19 @@ import com.aevi.print.model.PrintPayload;
 /**
  * This abstract service should be extended to provide a print driver service implementation
  */
-public abstract class BasePrinterDriverService extends AbstractMessengerService<PrintPayload, PrintJob> {
-
-    protected BasePrinterDriverService() {
-        super(PrintPayload.class);
-    }
+public abstract class BasePrinterDriverService extends AbstractMessengerService {
 
     @Override
-    protected void handleRequest(PrintPayload payload, String packageName) {
-        print(payload);
+    protected void handleRequest(String clientId, String payload, String packageName) {
+        print(clientId, PrintPayload.fromJson(payload));
     }
 
-    protected abstract void print(PrintPayload payload);
+    protected abstract void print(String clientId, PrintPayload payload);
 
-    protected void sendResponse(PrintPayload payload, PrintJob printJob) {
-        sendMessageToClient(payload.getId(), printJob);
+    protected void sendResponse(String clientId, PrintJob printJob) {
+        sendMessageToClient(clientId, printJob.toJson());
         if (printJob.getPrintJobState() == PrintJob.State.FAILED || printJob.getPrintJobState() == PrintJob.State.PRINTED) {
-            sendEndStreamMessageToClient(payload.getId());
+            sendEndStreamMessageToClient(clientId);
         }
     }
 }

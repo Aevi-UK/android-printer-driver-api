@@ -9,14 +9,14 @@ ext {
     supportLibrary = '26.0.0'
     designLibrary = '26.0.0'
 
-    rxMessengerVersion = '1.0.0'
+    rxMessengerVersion = '2.0.0'
 
     junitVersion = '4.12'
     mockitoVersion = '1.10.19'
     robolectricVersion = '3.3.2'
     assertJVersion = '2.7.0'
 
-    printApiVersion = '1.0.0'
+    printApiVersion = '1.1.0-SNAPSHOT'
 
     presentationDependencies = [
             butterKnife      : "com.jakewharton:butterknife:$butterKnifeVersion",
