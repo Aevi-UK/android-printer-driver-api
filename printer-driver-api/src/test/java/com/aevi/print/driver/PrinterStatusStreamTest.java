@@ -14,7 +14,6 @@
 package com.aevi.print.driver;
 
 import com.aevi.print.model.PrinterStatus;
-import com.aevi.print.model.PrinterStatusRequest;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -24,7 +23,6 @@ import org.mockito.Mock;
 import org.robolectric.shadows.ShadowLog;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
@@ -51,18 +49,16 @@ public class PrinterStatusStreamTest {
 
     @Test
     public void canSubscribeToPrinterStatuses() {
-        PrinterStatusRequest printerStatusRequest = new PrinterStatusRequest("123456");
-        printerStatusStream.subscribeToStatus(printerStatusRequest);
+        printerStatusStream.subscribeToStatus("12344", "123456");
 
         PrinterStatusStream.emitStatus("123456", "Hello");
 
-        verifyStatusWasSent(printerStatusRequest.getId(), "Hello");
+        verifyStatusWasSent("12344", "Hello");
     }
 
     @Test
     public void checkWontGetStatusFromOtherPrinterId() {
-        PrinterStatusRequest printerStatusRequest = new PrinterStatusRequest("765431");
-        printerStatusStream.subscribeToStatus(printerStatusRequest);
+        printerStatusStream.subscribeToStatus("12344", "765431");
 
         PrinterStatusStream.emitStatus("123456", "Hello");
 
@@ -71,25 +67,22 @@ public class PrinterStatusStreamTest {
 
     @Test
     public void checkMultipleSubscriptions() {
-        PrinterStatusRequest printerStatusRequest1 = new PrinterStatusRequest("123456");
-        PrinterStatusRequest printerStatusRequest2 = new PrinterStatusRequest("123456");
-        printerStatusStream.subscribeToStatus(printerStatusRequest1);
-        printerStatusStream.subscribeToStatus(printerStatusRequest2);
+        printerStatusStream.subscribeToStatus("16166", "123456");
+        printerStatusStream.subscribeToStatus("16167", "123456");
 
         PrinterStatusStream.emitStatus("123456", "Hello");
 
-        verifyStatusWasSent(printerStatusRequest1.getId(), "Hello");
-        verifyStatusWasSent(printerStatusRequest2.getId(), "Hello");
+        verifyStatusWasSent("16166", "Hello");
+        verifyStatusWasSent("16167", "Hello");
     }
 
     @Test
     public void canFinishPrinterStatusStream() {
-        PrinterStatusRequest printerStatusRequest = new PrinterStatusRequest("123456");
-        printerStatusStream.subscribeToStatus(printerStatusRequest);
+        printerStatusStream.subscribeToStatus("77372", "123456");
 
         PrinterStatusStream.finishPrinter("123456");
 
-        verifyEndWasSent(printerStatusRequest.getId());
+        verifyEndWasSent("77372");
     }
 
     private void verifyEndWasSent(String requestId) {
@@ -97,12 +90,12 @@ public class PrinterStatusStreamTest {
     }
 
     private void verifyStatusWasSent(String requestId, String status) {
-        ArgumentCaptor<PrinterStatus> printerStatusArgumentCaptor = ArgumentCaptor.forClass(PrinterStatus.class);
+        ArgumentCaptor<String> printerStatusArgumentCaptor = ArgumentCaptor.forClass(String.class);
         verify(mockPrinterStatusService).sendMessageToClient(eq(requestId), printerStatusArgumentCaptor.capture());
-        assertThat(printerStatusArgumentCaptor.getValue().getStatus()).isEqualTo(status);
+        assertThat(PrinterStatus.fromJson(printerStatusArgumentCaptor.getValue()).getStatus()).isEqualTo(status);
     }
 
     private void verifyStatusWasNotSent() {
-        verify(mockPrinterStatusService, times(0)).sendMessageToClient(anyString(), any(PrinterStatus.class));
+        verify(mockPrinterStatusService, times(0)).sendMessageToClient(anyString(), anyString());
     }
 }
