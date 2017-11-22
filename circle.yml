@@ -41,6 +41,12 @@ deployment:
         branch: master
         commands:
             - ./gradlew build javadoc bintrayUpload
+            - /bin/bash publish-javadocs.sh
+    feature:
+        branch: /.*testing.*/
+        commands:
+            - ./gradlew build javadoc
+            - /bin/bash publish-javadocs.sh
 
 general:
   artifacts:
