@@ -19,7 +19,6 @@ dependencies:
     - ~/.android
   override:
     - sudo pip install awscli
-    - ./buildDocs.sh
 
 test:
   override:
@@ -41,9 +40,8 @@ deployment:
     production:
         branch: master
         commands:
-            - ./gradlew bintrayUpload
+            - ./gradlew build javadoc bintrayUpload
 
 general:
   artifacts:
-    - "documentation/public"
     - "printer-driver-api/build/docs/javadoc"

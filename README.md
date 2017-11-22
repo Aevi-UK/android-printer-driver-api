@@ -11,10 +11,7 @@ that will handle the actual print process with the physical devices.
 
 # Binaries
 
-Currently this API is under development and is therefore only published to our own bintray repository.
-When we release v1 of this API we will upload it to jcenter.
-
-Therefore, in your main gradle.build you'll need to include our public bintray in your main
+In your main gradle.build you'll need to include our public bintray in your main
 repositories section.
 
 ```
@@ -37,11 +34,15 @@ compile 'com.aevi.print:printer-driver-api:1.0.0'
 The `DemoPrinterDriver` application contained here is an example printer driver implementing this API. This driver will print to the standard Android
 PrintManager, in a real example you would replace the Android PrintManager with calls to the manufacturer specific API/SDK for the physical printer device.
 
-To read more details about how to use the API and how to create a manufacturer driver for AEVI enabled devices
-[see our documentation here](https://aevi-uk.github.io/android-printer-driver-api)
+
+# Full Documentation
+
+* [Wiki](https://github.com/Aevi-UK/android-pos-print-api/wiki) 
 
 To read more about the developer API that other developers can use to print via your driver [see the print-api here](https://github.com/Aevi-UK/android-pos-print-api)
-and the [corresponding documentation here](https://aevi-uk.github.io/android-pos-print-api/)
+and the [corresponding documentation here](https://github.com/Aevi-UK/android-pos-print-api/wiki)
+
+
 
 # Bugs and Feedback
 
