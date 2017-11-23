@@ -37,11 +37,10 @@ PrintManager, in a real example you would replace the Android PrintManager with 
 
 # Full Documentation
 
-* [Wiki](https://github.com/Aevi-UK/android-pos-print-api/wiki) 
+* [Wiki](https://github.com/Aevi-UK/android-printer-driver-api/wiki) 
+* [Javadoc](https://aevi-uk.github.io/android-printer-driver-api/javadoc/index.html)
 
-To read more about the developer API that other developers can use to print via your driver [see the print-api here](https://github.com/Aevi-UK/android-pos-print-api)
-and the [corresponding documentation here](https://github.com/Aevi-UK/android-pos-print-api/wiki)
-
+The developer API that other developers can use to print via your driver [see the print-api here](https://github.com/Aevi-UK/android-pos-print-api).
 
 
 # Bugs and Feedback
