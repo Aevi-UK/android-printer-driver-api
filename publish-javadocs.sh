@@ -1,10 +1,9 @@
 #!/bin/bash
+
 set -e
 
 LOCAL_CLONE_DIR="temp/gh-pages"
 JAVA_DOC_LOCATION="printer-driver-api/build/docs/javadoc/"
-GIT_USER_NAME="CircleCI"
-GIT_USER_EMAIL="brett@annalytics.co.uk"
 
 function exit_with_error {
     echo "ERROR: $2"
@@ -16,39 +15,49 @@ if [ ! -d $JAVA_DOC_LOCATION ]; then
 fi
 
 echo "Checking for on master branch"
-#if [ ${CIRCLE_BRANCH=local} != "master" ]; then
-#    exit_with_error 2 "Not on master branch"
-#fi
+if [ ${CIRCLE_BRANCH=local} != "master" ]; then
+    exit_with_error 1 "Not on master branch"
+fi
 
-GITHUB_CLONE_URL=`git remote get-url origin`
+remote=$(git config remote.origin.url)
 
 
 rm -f -r $LOCAL_CLONE_DIR
 
-echo "Getting gh-pages branch from GitHub: $LOCAL_CLONE_DIR"
-git clone $GITHUB_CLONE_URL $LOCAL_CLONE_DIR
-if [ ! -d "$LOCAL_CLONE_DIR" ]; then
-    exit_with_error 2 "Failed to get gh-pages branch from GitHub!"
+mkdir -p $LOCAL_CLONE_DIR
+cd $LOCAL_CLONE_DIR
+
+git config --global user.name "CircleCI" > /dev/null 2>&1
+git config --global user.email "brett@annalytics.co.uk" > /dev/null 2>&1
+git init
+
+echo "Get gh-pages from remote"
+git remote add --fetch origin "$remote"
+
+# switch into the the gh-pages branch
+if git rev-parse --verify origin/gh-pages > /dev/null 2>&1
+then
+    git checkout gh-pages
+    # delete any old site as we are going to replace it
+    rm -f -r *
+else
+    git checkout --orphan gh-pages
 fi
 
-(cd $LOCAL_CLONE_DIR
-    git init
-    git config user.name $GIT_USER_NAME
-    git config user.email $GIT_USER_EMAIL
 
-    git fetch origin
-    git checkout gh-pages
+echo "Copy in latest javadocs"
+cp  -r ../../$JAVA_DOC_LOCATION javadoc/
 
-    echo "delete all old documentation pages and replace with new javadoc"    
-    rm -f -r javadoc/*
-    cp  -r "../../$JAVA_DOC_LOCATION/" javadoc/
+echo "Commit and push javadoc to gh-pages"
+# stage any changes and new files
+git add -A
+# now commit, ignoring branch gh-pages doesn't seem to work, so trying skip
+git commit --allow-empty -m "Deploy to GitHub pages [ci skip]"
+# and push, but send any output to /dev/null to hide anything sensitive
+git push --force --quiet origin gh-pages
 
-    echo "Commit and push javadoc to gh-pages"
-    git add *
+cd ../..
 
-    git commit -a -m "javadoc automatically updated"
-    git  push
-)
-
+rm -rf $LOCAL_CLONE_DIR
 
 echo "Finished - javadoc docs automatically updated"
