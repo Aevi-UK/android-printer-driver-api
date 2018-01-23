@@ -18,6 +18,15 @@ allprojects {
             url  "http://dl.bintray.com/aevi/aevi-uk"
         }
         mavenLocal()
+        if (project.hasProperty('aws_accessid')) {
+            maven {
+                url "s3://sdk-snapshots.aevi.com/maven2"
+                credentials(AwsCredentials) {
+                    accessKey aws_accessid
+                    secretKey aws_accesskey
+                }
+            }
+        }
     }
 }
 
