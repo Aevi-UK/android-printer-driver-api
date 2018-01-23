@@ -59,7 +59,7 @@ public class AndroidPrintActivity extends Activity {
 
     private void printReceipt(PrintPayload payload, PrinterSettings printerSettings) {
 
-        final ObservableActivityHelper<PrintJob> resultHelper = ObservableActivityHelper.createInstance(this, getIntent());
+        final ObservableActivityHelper<PrintJob> resultHelper = ObservableActivityHelper.getInstance(getIntent());
 
         try {
             String jobName = UUID.randomUUID().toString();

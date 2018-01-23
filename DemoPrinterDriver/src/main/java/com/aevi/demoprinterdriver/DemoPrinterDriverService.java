@@ -47,7 +47,7 @@ public class DemoPrinterDriverService extends BasePrinterDriverService {
         intent.setFlags(FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_NO_ANIMATION);
         intent.putExtra(KEY_PAYLOAD, payload.toJson());
         intent.putExtra(KEY_PRINTER_SETTINGS, printerSettings[0].toJson());
-        ObservableActivityHelper<PrintJob> helper = ObservableActivityHelper.createInstance(getBaseContext(), intent);
+        ObservableActivityHelper<PrintJob> helper = ObservableActivityHelper.getInstance(intent);
         helper.startObservableActivity().subscribe(
                 new Consumer<PrintJob>() {
                     @Override
