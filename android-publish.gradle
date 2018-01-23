@@ -33,8 +33,8 @@ publishing {
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
 
-                // List all compile dependencies and write to POM
-                configurations.compile.getAllDependencies().each { Dependency dep ->
+                // List all api dependencies and write to POM
+                configurations.api.getAllDependencies().each { Dependency dep ->
                     if (dep.group == null || dep.version == null || dep.name == null || dep.name == "unspecified")
                         return // ignore invalid dependencies
 

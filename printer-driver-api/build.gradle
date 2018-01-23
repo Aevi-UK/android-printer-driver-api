@@ -25,14 +25,14 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile domainDependencies.printApi
-    compile domainDependencies.rxMessenger
+    api domainDependencies.printApi
+    api domainDependencies.rxMessenger
 
-    testCompile testDependencies.junit
-    testCompile testDependencies.robolectric
-    testCompile testDependencies.mockito
+    testImplementation testDependencies.junit
+    testImplementation testDependencies.robolectric
+    testImplementation testDependencies.mockito
 }
 
 def siteUrl = 'https://github.com/Aevi-UK/android-pos-print-api'
