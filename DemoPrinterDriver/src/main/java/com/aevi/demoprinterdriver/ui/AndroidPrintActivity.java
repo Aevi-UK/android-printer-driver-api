@@ -21,7 +21,7 @@ import android.support.v4.print.PrintHelper;
 import android.util.Log;
 
 import com.aevi.android.rxmessenger.MessageException;
-import com.aevi.android.rxmessenger.ObservableActivityHelper;
+import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.print.PrintPreview;
 import com.aevi.print.model.PrintJob;
 import com.aevi.print.model.PrintPayload;
@@ -59,7 +59,7 @@ public class AndroidPrintActivity extends Activity {
 
     private void printReceipt(PrintPayload payload, PrinterSettings printerSettings) {
 
-        final ObservableActivityHelper<PrintJob> resultHelper = ObservableActivityHelper.getInstance(this, getIntent());
+        final ObservableActivityHelper<PrintJob> resultHelper = ObservableActivityHelper.createInstance(this, getIntent());
 
         try {
             String jobName = UUID.randomUUID().toString();

@@ -16,7 +16,7 @@ package com.aevi.demoprinterdriver;
 import android.content.Intent;
 import android.util.Log;
 
-import com.aevi.android.rxmessenger.ObservableActivityHelper;
+import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.demoprinterdriver.model.PrinterSettingsHolder;
 import com.aevi.demoprinterdriver.ui.AndroidPrintActivity;
 import com.aevi.print.model.PrintJob;
@@ -47,7 +47,7 @@ public class DemoPrinterDriverService extends BasePrinterDriverService {
         intent.setFlags(FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_NO_ANIMATION);
         intent.putExtra(KEY_PAYLOAD, payload.toJson());
         intent.putExtra(KEY_PRINTER_SETTINGS, printerSettings[0].toJson());
-        ObservableActivityHelper<PrintJob> helper = ObservableActivityHelper.getInstance(getBaseContext(), intent);
+        ObservableActivityHelper<PrintJob> helper = ObservableActivityHelper.createInstance(getBaseContext(), intent);
         helper.startObservableActivity().subscribe(
                 new Consumer<PrintJob>() {
                     @Override

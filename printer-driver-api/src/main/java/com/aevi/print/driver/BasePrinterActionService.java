@@ -13,7 +13,7 @@
  */
 package com.aevi.print.driver;
 
-import com.aevi.android.rxmessenger.AbstractMessengerService;
+import com.aevi.android.rxmessenger.service.AbstractMessengerService;
 import com.aevi.print.model.PrintAction;
 
 /**
