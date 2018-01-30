@@ -25,17 +25,17 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile project(':printer-driver-api')
+    implementation project(':printer-driver-api')
 
-    compile presentationDependencies.butterKnife
+    implementation presentationDependencies.butterKnife
     annotationProcessor aptDependencies.butterKnife
 
-    compile(presentationDependencies.support) { force = true }
-    compile(presentationDependencies.appCompat) { force = true }
-    compile(presentationDependencies.recyclerView) { force = true }
-    compile(presentationDependencies.design) { force = true }
+    implementation(presentationDependencies.support) { force = true }
+    implementation(presentationDependencies.appCompat) { force = true }
+    implementation(presentationDependencies.recyclerView) { force = true }
+    implementation(presentationDependencies.design) { force = true }
 
-    testCompile testDependencies.junit
+    testImplementation testDependencies.junit
 }

@@ -14,9 +14,12 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
 }
-artifacts {
-    archives javadocJar
-    archives sourcesJar
+
+android.libraryVariants.all { variant ->
+    def task = project.tasks.create "jar${name.capitalize()}", Jar
+    task.dependsOn variant.javaCompile
+    task.from variant.getJavaCompiler().destinationDir
+    artifacts.add('archives', task);
 }
 
 publishing {
@@ -26,6 +29,7 @@ publishing {
             artifactId "${artifactId}"
             version version
 
+            artifact jarRelease
             artifact bundleRelease
             artifact javadocJar
             artifact sourcesJar
@@ -33,8 +37,8 @@ publishing {
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
 
-                // List all compile dependencies and write to POM
-                configurations.compile.getAllDependencies().each { Dependency dep ->
+                // List all api dependencies and write to POM
+                configurations.api.getAllDependencies().each { Dependency dep ->
                     if (dep.group == null || dep.version == null || dep.name == null || dep.name == "unspecified")
                         return // ignore invalid dependencies
 

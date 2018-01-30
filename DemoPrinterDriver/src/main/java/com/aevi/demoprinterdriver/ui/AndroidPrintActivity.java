@@ -19,9 +19,12 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.print.PrintHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.aevi.android.rxmessenger.MessageException;
-import com.aevi.android.rxmessenger.ObservableActivityHelper;
+import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
+import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
+import com.aevi.demoprinterdriver.R;
 import com.aevi.print.PrintPreview;
 import com.aevi.print.model.PrintJob;
 import com.aevi.print.model.PrintPayload;
@@ -58,8 +61,15 @@ public class AndroidPrintActivity extends Activity {
     }
 
     private void printReceipt(PrintPayload payload, PrinterSettings printerSettings) {
-
-        final ObservableActivityHelper<PrintJob> resultHelper = ObservableActivityHelper.getInstance(this, getIntent());
+        ObservableActivityHelper<PrintJob> resultHelper;
+        try {
+            resultHelper = ObservableActivityHelper.getInstance(getIntent());
+        } catch (NoSuchInstanceException e) {
+            Log.e(TAG, "Failed to print via Android", e);
+            Toast.makeText(this, R.string.printing_service_failure, Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
 
         try {
             String jobName = UUID.randomUUID().toString();

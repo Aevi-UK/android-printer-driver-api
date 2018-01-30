@@ -13,7 +13,7 @@
  */
 package com.aevi.print.driver;
 
-import com.aevi.android.rxmessenger.AbstractMessengerService;
+import com.aevi.android.rxmessenger.service.AbstractMessengerService;
 
 /**
  * This abstract service should be extended to provide a print driver status implementation
