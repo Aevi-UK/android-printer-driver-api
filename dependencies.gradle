@@ -9,7 +9,7 @@ ext {
     supportLibrary = '26.0.0'
     designLibrary = '26.0.0'
 
-    rxMessengerVersion = '3.0.0'
+    rxMessengerVersion = '3.0.1'
 
     junitVersion = '4.12'
     mockitoVersion = '1.10.19'
