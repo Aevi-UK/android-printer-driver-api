@@ -16,7 +16,6 @@ package com.aevi.demoprinterdriver;
 import android.content.Intent;
 import android.util.Log;
 
-import com.aevi.android.rxmessenger.activity.NoSuchInstanceException;
 import com.aevi.android.rxmessenger.activity.ObservableActivityHelper;
 import com.aevi.demoprinterdriver.model.PrinterSettingsHolder;
 import com.aevi.demoprinterdriver.ui.AndroidPrintActivity;
@@ -48,14 +47,8 @@ public class DemoPrinterDriverService extends BasePrinterDriverService {
         intent.setFlags(FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_NO_ANIMATION);
         intent.putExtra(KEY_PAYLOAD, payload.toJson());
         intent.putExtra(KEY_PRINTER_SETTINGS, printerSettings[0].toJson());
-        ObservableActivityHelper<PrintJob> helper;
-        try {
-            helper = ObservableActivityHelper.getInstance(intent);
-        } catch (NoSuchInstanceException e) {
-            sendErrorMessageToClient(clientId, PrinterMessages.ERROR_PRINT_FAILED,
-                    "Failed to print: " + e.getMessage());
-            return;
-        }
+
+        ObservableActivityHelper<PrintJob> helper = ObservableActivityHelper.createInstance(this, intent);
         helper.startObservableActivity().subscribe(
                 new Consumer<PrintJob>() {
                     @Override
