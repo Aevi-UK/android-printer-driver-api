@@ -20,7 +20,7 @@ import com.aevi.android.rxmessenger.service.AbstractMessengerService;
  */
 public abstract class BasePrinterStatusService extends AbstractMessengerService {
 
-    private PrinterStatusStream printerStatusStream;
+    private final PrinterStatusStream printerStatusStream;
 
     protected BasePrinterStatusService() {
         printerStatusStream = new PrinterStatusStream(this);
