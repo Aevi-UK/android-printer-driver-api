@@ -1,6 +1,6 @@
 package com.aevi.print.driver.common;
 
-import com.aevi.print.driver.common.devices.CommonPrinterInfo;
+import com.aevi.print.model.BasePrinterInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +9,7 @@ public abstract class PrinterDriverFactory {
 
     private final Map<String, PrinterDriverBase> printerDrivers = new HashMap<>();
 
-    public PrinterDriverBase getPrinterDriver(final CommonPrinterInfo printerInfo) {
+    public PrinterDriverBase getPrinterDriver(final BasePrinterInfo printerInfo) {
         String printerId = printerInfo.getPrinterId();
         synchronized (printerDrivers) {
             PrinterDriverBase printerDriver = printerDrivers.get(printerId);
@@ -27,5 +27,5 @@ public abstract class PrinterDriverFactory {
         }
     }
 
-    protected abstract PrinterDriverBase createPrinterDriver(CommonPrinterInfo printerInfo);
+    protected abstract PrinterDriverBase createPrinterDriver(BasePrinterInfo printerInfo);
 }

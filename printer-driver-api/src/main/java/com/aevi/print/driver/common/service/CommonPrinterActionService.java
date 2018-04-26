@@ -5,7 +5,7 @@ import android.util.Log;
 import com.aevi.print.driver.BasePrinterActionService;
 import com.aevi.print.driver.PrinterStatusStream;
 import com.aevi.print.driver.common.PrinterDriverFactory;
-import com.aevi.print.driver.common.devices.CommonPrinterInfo;
+import com.aevi.print.model.BasePrinterInfo;
 import com.aevi.print.model.PrinterMessages;
 
 import io.reactivex.Completable;
@@ -35,7 +35,7 @@ public abstract class CommonPrinterActionService extends BasePrinterActionServic
             return;
         }
 
-        final CommonPrinterInfo printerInfo = getDeviceInfo(printerId);
+        final BasePrinterInfo printerInfo = getDeviceInfo(printerId);
         if (printerInfo == null) {
             Log.e(TAG, "Unknown printer " + printerId);
             printerDriverFactory.deletePrinterDriver(printerId);
@@ -52,5 +52,5 @@ public abstract class CommonPrinterActionService extends BasePrinterActionServic
 
     }
 
-    protected abstract CommonPrinterInfo getDeviceInfo(String printerId);
+    protected abstract BasePrinterInfo getDeviceInfo(String printerId);
 }

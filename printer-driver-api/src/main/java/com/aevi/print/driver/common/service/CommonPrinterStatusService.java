@@ -3,7 +3,7 @@ package com.aevi.print.driver.common.service;
 import com.aevi.print.driver.BasePrinterStatusService;
 import com.aevi.print.driver.PrinterStatusStream;
 import com.aevi.print.driver.common.PrinterDriverFactory;
-import com.aevi.print.driver.common.devices.CommonPrinterInfo;
+import com.aevi.print.model.BasePrinterInfo;
 import com.aevi.print.model.PrinterMessages;
 
 import static com.aevi.print.util.Preconditions.checkNotNull;
@@ -17,13 +17,13 @@ public abstract class CommonPrinterStatusService extends BasePrinterStatusServic
         this.printerDriverFactory = printerDriverFactory;
     }
 
-    protected abstract CommonPrinterInfo getDeviceInfo(String printerId);
+    protected abstract BasePrinterInfo getDeviceInfo(String printerId);
 
     @Override
     protected void handleRequest(String clientId, String printerId, String packageName) {
         checkNotNull(printerDriverFactory, "setPrinterDriverFactory must be set before the handleRequest method is called");
 
-        final CommonPrinterInfo printerInfo = getDeviceInfo(printerId);
+        final BasePrinterInfo printerInfo = getDeviceInfo(printerId);
         if (printerInfo == null) {
             printerDriverFactory.deletePrinterDriver(printerId);
             PrinterStatusStream.emitStatus(printerId, PrinterMessages.ERROR_PRINTER_NOT_FOUND);

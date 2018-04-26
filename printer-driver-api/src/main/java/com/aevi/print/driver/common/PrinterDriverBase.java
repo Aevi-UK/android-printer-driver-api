@@ -3,7 +3,7 @@ package com.aevi.print.driver.common;
 import android.util.Log;
 
 import com.aevi.print.driver.PrinterStatusStream;
-import com.aevi.print.driver.common.devices.CommonPrinterInfo;
+import com.aevi.print.model.BasePrinterInfo;
 import com.aevi.print.model.PrintJob;
 import com.aevi.print.model.PrintPayload;
 import com.aevi.print.model.PrinterMessages;
@@ -18,7 +18,7 @@ import io.reactivex.annotations.NonNull;
 
 import static com.aevi.print.model.PrintJob.State.IN_PROGRESS;
 
-public abstract class PrinterDriverBase<T> {
+public abstract class PrinterDriverBase<T extends BasePrinterInfo> {
     private static final String TAG = PrinterDriverBase.class.getSimpleName();
 
     private final AtomicBoolean printerInUse = new AtomicBoolean();
@@ -26,10 +26,10 @@ public abstract class PrinterDriverBase<T> {
     private final AtomicReference<PrintPayload> printPayloadTask = new AtomicReference<>();
     private final AtomicReference<String> printActionTask = new AtomicReference<>();
 
-    private final CommonPrinterInfo printerInfo;
+    private final BasePrinterInfo printerInfo;
     private ObservableEmitter<PrintJob> printJobEmitter;
 
-    public PrinterDriverBase(CommonPrinterInfo printerInfo) {
+    public PrinterDriverBase(BasePrinterInfo printerInfo) {
 
         this.printerInfo = printerInfo;
     }
