@@ -1,6 +1,6 @@
 ext {
 
-    androidBuildVersion = "26.0.2"
+    androidBuildVersion = "27.0.3"
     projectTargetSdkVersion = 26
     projectMinSdkVersion = 22
 
