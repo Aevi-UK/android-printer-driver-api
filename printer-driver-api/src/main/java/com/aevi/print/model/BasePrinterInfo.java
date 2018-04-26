@@ -6,5 +6,9 @@ package com.aevi.print.model;
  */
 public interface BasePrinterInfo {
 
+    /**
+     * This printer ID should be unique for each physical printer that this driver locates
+     * @return A unique printer ID
+     */
     String getPrinterId();
 }
