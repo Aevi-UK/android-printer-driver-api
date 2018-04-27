@@ -28,15 +28,39 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.aevi.print.util.Preconditions.checkNotNull;
 
+/**
+ * Extend this abstract service to provide the print action service implementation.
+ * Use this class when using the printer driver framework (See {@link com.aevi.print.driver.common.PrinterDriverBase})
+ */
 public abstract class CommonPrinterActionService extends BasePrinterActionService {
     private static final String TAG = CommonPrinterActionService.class.getSimpleName();
     private PrinterDriverFactory printerDriverFactory;
 
+    /**
+     * The custom PrinterDriverFactory should be set before any other methods in this class are called
+     *
+     * @param printerDriverFactory the driver implementation of the PrinterDriverFactory
+     */
     protected void setPrinterDriverFactory(PrinterDriverFactory printerDriverFactory) {
         checkNotNull(printerDriverFactory, "PrinterDriverFactory must not be null");
         this.printerDriverFactory = printerDriverFactory;
     }
 
+    /**
+     * Provides the printer info that will be used by the implementation of {@link com.aevi.print.driver.common.PrinterDriverBase}
+     *
+     * @param printerId the printer id that uniquely identifies each printer.
+     * @return The class providing the details of the printer
+     */
+    protected abstract BasePrinterInfo getDeviceInfo(String printerId);
+
+    /**
+     * The implementation method that responds to the printer action
+     *
+     * @param clientId  the unique client id
+     * @param printerId the unique printer id that identifies the printer
+     * @param action    the printer action to perform
+     */
     @Override
     protected void action(String clientId, String printerId, final String action) {
         checkNotNull(printerDriverFactory, "setPrinterDriverFactory must be set before the action method is called");
@@ -64,6 +88,4 @@ public abstract class CommonPrinterActionService extends BasePrinterActionServic
         }).subscribeOn(Schedulers.newThread()).subscribe();
 
     }
-
-    protected abstract BasePrinterInfo getDeviceInfo(String printerId);
 }

@@ -17,6 +17,8 @@ import com.aevi.android.rxmessenger.service.AbstractMessengerService;
 
 /**
  * This abstract service should be extended to provide a print driver status implementation
+ *
+ * @see com.aevi.print.driver.common.service.CommonPrinterStatusService
  */
 public abstract class BasePrinterStatusService extends AbstractMessengerService {
 

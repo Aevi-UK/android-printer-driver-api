@@ -19,6 +19,8 @@ import com.aevi.print.model.PrintPayload;
 
 /**
  * This abstract service should be extended to provide a print driver service implementation
+ *
+ * @see com.aevi.print.driver.common.service.CommonPrinterDriverService
  */
 public abstract class BasePrinterDriverService extends AbstractMessengerService {
 

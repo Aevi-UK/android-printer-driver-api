@@ -18,10 +18,24 @@ import com.aevi.print.model.BasePrinterInfo;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class ensures that a single new instance of the printer driver is created for each printer detected.
+ * Developers should extend this class and then implement the {@link #createPrinterDriver } method.
+ *
+ * @see com.aevi.print.driver.common.service.CommonPrinterActionService
+ * @see com.aevi.print.driver.common.service.CommonPrinterDriverService
+ * @see com.aevi.print.driver.common.service.CommonPrinterStatusService
+ */
 public abstract class PrinterDriverFactory {
 
     private final Map<String, PrinterDriverBase> printerDrivers = new HashMap<>();
 
+    /**
+     * Returns either an existing instance  or creates a new of instance the printer driver.
+     *
+     * @param printerInfo the class providing the details of the printer
+     * @return the instance of the printer driver
+     */
     public PrinterDriverBase getPrinterDriver(final BasePrinterInfo printerInfo) {
         String printerId = printerInfo.getPrinterId();
         synchronized (printerDrivers) {
@@ -34,11 +48,21 @@ public abstract class PrinterDriverFactory {
         }
     }
 
+    /**
+     * Deletes the printer driver
+     * @param printerId The id of the printer driver to delete
+     */
     public void deletePrinterDriver(String printerId) {
         synchronized (printerDrivers) {
             printerDrivers.remove(printerId);
         }
     }
 
+    /**
+     * The implementation class must create a new instance of the printer driver
+     *
+     * @param printerInfo The class providing the details of the printer
+     * @return the new instance of the printer driver to be used
+     */
     protected abstract PrinterDriverBase createPrinterDriver(BasePrinterInfo printerInfo);
 }
