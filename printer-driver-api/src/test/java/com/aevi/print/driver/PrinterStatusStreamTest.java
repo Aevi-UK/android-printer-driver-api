@@ -37,7 +37,6 @@ public class PrinterStatusStreamTest {
     @Mock
     private BasePrinterStatusService mockPrinterStatusService;
 
-    @Mock
     private PrinterStatusStream printerStatusStream;
 
     @Before
