@@ -1,5 +1,19 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.aevi.print.driver.common;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.aevi.print.driver.PrinterStatusStream;
@@ -14,7 +28,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.annotations.NonNull;
 
 import static com.aevi.print.model.PrintJob.State.IN_PROGRESS;
 
@@ -23,11 +36,10 @@ public abstract class PrinterDriverBase<T extends BasePrinterInfo> {
 
     private final AtomicBoolean printerInUse = new AtomicBoolean();
     private final AtomicBoolean connectedToPrinter = new AtomicBoolean();
-    private final AtomicReference<PrintPayload> printPayloadTask = new AtomicReference<>();
+    private final AtomicReference<PrintJobTask> printJobTask = new AtomicReference<>();
     private final AtomicReference<String> printActionTask = new AtomicReference<>();
 
     private final BasePrinterInfo printerInfo;
-    private ObservableEmitter<PrintJob> printJobEmitter;
 
     public PrinterDriverBase(BasePrinterInfo printerInfo) {
 
@@ -42,9 +54,9 @@ public abstract class PrinterDriverBase<T extends BasePrinterInfo> {
 
     protected abstract void disconnectFromPrinter();
 
-    protected abstract void executePrintPayloadTask(PrintPayload printPayload);
+    protected abstract void executePrintPayloadTask(@NonNull PrintPayload printPayload);
 
-    protected abstract void executePrintActionTask(String printActionJob);
+    protected abstract void executePrintActionTask(@NonNull String printActionJob);
 
     public void onPrinterConnected() {
         Log.d(TAG, "Connected to printer " + printerInfo.getPrinterId());
@@ -59,27 +71,27 @@ public abstract class PrinterDriverBase<T extends BasePrinterInfo> {
 
         if (isADriverTaskWaiting()) {
             // This catches the case where a new (action) task comes in as the connection is being closed
-            Log.d(TAG, "More tasks are waiting, reconnect to the printer so they can be completed. " + printerInfo.getPrinterId());
-            connectToPrinter();
+            Log.d(TAG, "More tasks are waiting, reconnecting to the printer: " + printerInfo.getPrinterId());
+            connectToPrinterIfRequired();
         }
     }
 
     private boolean isADriverTaskWaiting() {
-        return printPayloadTask.get() != null || printActionTask.get() != null;
+        return printJobTask.get() != null || printActionTask.get() != null;
     }
 
     private void clearAllDriverTasks() {
-        printPayloadTask.set(null);
+        printJobTask.set(null);
         printActionTask.set(null);
     }
 
     private void executePrinterTasks() {
 
         if (connectedToPrinter.get()) {
-            PrintPayload printPayloadJob = this.printPayloadTask.getAndSet(null);
-            if (printPayloadJob != null) {
-                Log.d(TAG, "starting print payload task:  " + printPayloadJob.getPrinterId());
-                executePrintPayloadTask(printPayloadJob);
+            PrintPayload printPayload = getAndClearPrintPayload();
+            if (printPayload != null) {
+                Log.d(TAG, "starting print payload task:  " + printPayload.getPrinterId());
+                executePrintPayloadTask(printPayload);
                 return;
             }
 
@@ -92,23 +104,41 @@ public abstract class PrinterDriverBase<T extends BasePrinterInfo> {
 
             Log.d(TAG, "disconnecting from printer " + printerInfo.getPrinterId());
             disconnectFromPrinter();
+        } else {
+            Log.w(TAG, "Ignoring tasks when not connected to printer" + printerInfo.getPrinterId());
         }
     }
 
-    public Observable<PrintJob> print(final PrintPayload printPayload) {
+    private PrintPayload getAndClearPrintPayload() {
+        PrintJobTask printJobTask = this.printJobTask.get();
+        if (printJobTask == null) {
+            return null;
+        } else {
+            return printJobTask.getAndClearPrintPayload();
+        }
+    }
+
+    private boolean hasPrintJobTaskCompleted() {
+        PrintJobTask printJobTask = this.printJobTask.get();
+        if (printJobTask == null) {
+            return true;
+        } else {
+            return printJobTask.hasPrintJobTaskCompleted();
+        }
+    }
+
+    public Observable<PrintJob> print(@NonNull final PrintPayload printPayload) {
+        Log.d(TAG, "Received print request from: " + printerInfo.getPrinterId());
 
         return Observable.create(new ObservableOnSubscribe<PrintJob>() {
 
             @Override
             public void subscribe(@NonNull ObservableEmitter<PrintJob> emitter) throws Exception {
+                PrintJobTask printJobTask = new PrintJobTask(emitter, printPayload);
 
-                if (!PrinterDriverBase.this.printerInUse.getAndSet(true)) {
-
-                    printJobEmitter = emitter;
-                    PrinterDriverBase.this.printPayloadTask.set(printPayload);
+                if (PrinterDriverBase.this.printJobTask.compareAndSet(null, printJobTask)) {
                     emitter.onNext(new PrintJob(IN_PROGRESS));
-                    Log.d(TAG, "starting connection to printer: " + printerInfo.getPrinterId());
-                    connectToPrinter();
+                    connectToPrinterIfRequired();
                 } else {
                     emitter.onNext(new PrintJob(PrintJob.State.FAILED, PrinterMessages.ERROR_BUSY));
                     emitter.onComplete();
@@ -117,12 +147,17 @@ public abstract class PrinterDriverBase<T extends BasePrinterInfo> {
         });
     }
 
-    public void sendPrinterAction(String printAction) {
+    public void sendPrinterAction(@NonNull String printAction) {
+        Log.d(TAG, "Received action request from: " + printerInfo.getPrinterId());
 
         // This must be set first so that an already running print job can pick up the task
         printActionTask.set(printAction);
-        if (!printerInUse.getAndSet(true)) {
-            Log.d(TAG, "starting connection to printer");
+        connectToPrinterIfRequired();
+    }
+
+    private void connectToPrinterIfRequired() {
+        if (printerInUse.compareAndSet(false, true)) {
+            Log.d(TAG, "Starting connection to printer " + printerInfo.getPrinterId());
             connectToPrinter();
         }
     }
@@ -131,29 +166,24 @@ public abstract class PrinterDriverBase<T extends BasePrinterInfo> {
      * Must be called to indicated that a task has been completed successfully
      */
     public void onTaskCompletedSuccessfully() {
-        Log.w(TAG, "Printing task completed successfully for pinter : " + printerInfo.getPrinterId());
-        if (printJobEmitter != null) {
-            printJobEmitter.onNext(new PrintJob(PrintJob.State.PRINTED));
-            printJobCompleted();
+        Log.d(TAG, "Printing task completed successfully for printer : " + printerInfo.getPrinterId());
+        if (hasPrintJobTaskCompleted()) {
+            completePrintJob(new PrintJob(PrintJob.State.PRINTED));
         }
         executePrinterTasks();
     }
-
 
     /*
      * Called one no other task can continue e.g. when the printer is off line.
      * All other task are cancelled, disconnectFromPrinter will not be called.
      * The actual printer driver is responsible for cleaning up before this is called.
      */
-    public void onFatalError(String failedReason, String diagnosticMessage) {
+    public void onFatalError(@NonNull String failedReason, String diagnosticMessage) {
         Log.w(TAG, "Fatal printing error : " + failedReason + " - " + diagnosticMessage);
-        clearAllDriverTasks();
-        if (printJobEmitter != null) {
-            printJobEmitter.onNext(new PrintJob(PrintJob.State.FAILED, failedReason, diagnosticMessage));
-            printJobCompleted();
-        } else {
+        if (!completePrintJob(new PrintJob(PrintJob.State.FAILED, failedReason, diagnosticMessage))) {
             emitPrinterStatus(failedReason);
         }
+        clearAllDriverTasks();
         connectedToPrinter.set(false);
         printerInUse.set(false);
     }
@@ -163,13 +193,9 @@ public abstract class PrinterDriverBase<T extends BasePrinterInfo> {
      * (e.g if printer is out of paper the open cash drawer still be opened)
      * disconnectFromPrinter will be called automatically when all task have completed
      */
-    public void onPrintingFailed(String failedReason, String diagnosticMessage) {
+    public void onPrintingFailed(@NonNull String failedReason, String diagnosticMessage) {
         Log.w(TAG, "Printing failed : " + failedReason + " - " + diagnosticMessage);
-        printPayloadTask.set(null);
-        if (printJobEmitter != null) {
-            printJobEmitter.onNext(new PrintJob(PrintJob.State.FAILED, failedReason, diagnosticMessage));
-            printJobCompleted();
-        }
+        completePrintJob(new PrintJob(PrintJob.State.FAILED, failedReason, diagnosticMessage));
         executePrinterTasks();
     }
 
@@ -177,18 +203,50 @@ public abstract class PrinterDriverBase<T extends BasePrinterInfo> {
      * Called when sending a printer action has failed but other task can continue
      * disconnectFromPrinter will be called automatically when all task have completed
      */
-    public void onActionFailed(String failedReason, String diagnosticMessage) {
+    public void onActionFailed(@NonNull String failedReason, String diagnosticMessage) {
         Log.d(TAG, "Print action failed : " + failedReason + " - " + diagnosticMessage);
         emitPrinterStatus(failedReason);
         executePrinterTasks();
     }
 
-    private void printJobCompleted() {
-        printJobEmitter.onComplete();
-        printJobEmitter = null;
+    private boolean completePrintJob(PrintJob printJob) {
+        PrintJobTask printJobTask = this.printJobTask.getAndSet(null);
+        if (printJobTask != null) {
+            ObservableEmitter<PrintJob> emitter = printJobTask.getPrintJobEmitter();
+            emitter.onNext(printJob);
+            emitter.onComplete();
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public void emitPrinterStatus(String status) {
+    public void emitPrinterStatus(@NonNull String status) {
         PrinterStatusStream.emitStatus(printerInfo.getPrinterId(), status);
+    }
+
+    private class PrintJobTask {
+        @NonNull
+        private final ObservableEmitter<PrintJob> printJobEmitter;
+
+        private final AtomicReference<PrintPayload> printPayload = new AtomicReference<>();
+
+        PrintJobTask(@NonNull ObservableEmitter<PrintJob> printJobEmitter, @NonNull PrintPayload printPayload) {
+            this.printJobEmitter = printJobEmitter;
+            this.printPayload.set(printPayload);
+        }
+
+        @NonNull
+        public ObservableEmitter<PrintJob> getPrintJobEmitter() {
+            return printJobEmitter;
+        }
+
+        public PrintPayload getAndClearPrintPayload() {
+            return printPayload.getAndSet(null);
+        }
+
+        public boolean hasPrintJobTaskCompleted() {
+            return printPayload.get() == null;
+        }
     }
 }

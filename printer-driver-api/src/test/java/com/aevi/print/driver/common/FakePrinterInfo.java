@@ -11,17 +11,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.aevi.print.model;
+package com.aevi.print.driver.common;
 
-/**
- * An interface that should be implemented by a concrete instance in the driver class. Printer data/settings should at least expose a unique
- * ID.
- */
-public interface BasePrinterInfo {
+import com.aevi.print.model.BasePrinterInfo;
 
-    /**
-     * This printer ID should be unique for each physical printer that this driver locates
-     * @return A unique printer ID
-     */
-    String getPrinterId();
+public class FakePrinterInfo implements BasePrinterInfo {
+    private final String printerId;
+
+    FakePrinterInfo(String printerId) {
+        this.printerId = printerId;
+    }
+
+    @Override
+    public String getPrinterId() {
+        return printerId;
+    }
 }

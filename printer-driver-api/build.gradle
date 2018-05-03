@@ -21,6 +21,7 @@ dependencies {
 
     api domainDependencies.printApi
     api domainDependencies.rxMessenger
+    api presentationDependencies.supportAnnotation
 
     testImplementation testDependencies.junit
     testImplementation testDependencies.robolectric
