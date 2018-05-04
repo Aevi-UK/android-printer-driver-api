@@ -31,15 +31,38 @@ import io.reactivex.schedulers.Schedulers;
 import static com.aevi.print.model.PrintJob.State.FAILED;
 import static com.aevi.print.util.Preconditions.checkNotNull;
 
+
+/**
+ * Extend this abstract service to provide the print driver service implementation
+ * Use this class when using the printer driver framework (See {@link com.aevi.print.driver.common.PrinterDriverBase})
+ */
 public abstract class CommonPrinterDriverService extends BasePrinterDriverService {
     private static final String TAG = CommonPrinterDriverService.class.getSimpleName();
     private PrinterDriverFactory printerDriverFactory;
 
+    /**
+     * The custom PrinterDriverFactory should be set before any other methods in this class are called
+     *
+     * @param printerDriverFactory the driver implementation of the PrinterDriverFactory
+     */
     protected void setPrinterDriverFactory(PrinterDriverFactory printerDriverFactory) {
         checkNotNull(printerDriverFactory, "PrinterDriverFactory must not be null");
         this.printerDriverFactory = printerDriverFactory;
     }
 
+    /**
+     * Provides the printer info that will be used by the implementation of {@link com.aevi.print.driver.common.PrinterDriverBase}
+     *
+     * @param printerId the printer id that uniquely identifies each printer.
+     * @return The class providing the details of the printer
+     */
+    protected abstract BasePrinterInfo getDeviceInfo(String printerId);
+
+    /**
+     * The implementation method that prints the payload
+     * @param clientId the unique client id
+     * @param payload the payload to be sent to the pinter
+     */
     @Override
     protected void print(final String clientId, PrintPayload payload) {
         checkNotNull(printerDriverFactory, "setPrinterDriverFactory must be set before the print method is called");
@@ -87,5 +110,4 @@ public abstract class CommonPrinterDriverService extends BasePrinterDriverServic
                 });
     }
 
-    protected abstract BasePrinterInfo getDeviceInfo(String printerId);
 }

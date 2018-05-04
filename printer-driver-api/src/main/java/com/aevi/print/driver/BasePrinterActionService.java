@@ -18,6 +18,8 @@ import com.aevi.print.model.PrintAction;
 
 /**
  * This abstract service should be extended to provide a print action handler service implementation
+ *
+ * @see com.aevi.print.driver.common.service.CommonPrinterActionService
  */
 public abstract class BasePrinterActionService extends AbstractMessengerService {
 

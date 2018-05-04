@@ -5,9 +5,18 @@ task sourcesJar(type: Jar) {
     classifier = 'sources'
 }
 
+configurations {
+    javadoc_extra_jars
+}
+
+dependencies {
+    javadoc_extra_jars "${domainDependencies.rxJava}@jar", "${domainDependencies.rxMessenger}@jar", "${domainDependencies.printApi}@jar"
+}
+
 task javadoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    classpath += files(configurations.javadoc_extra_jars.files)
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
