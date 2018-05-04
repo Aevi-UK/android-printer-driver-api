@@ -1,5 +1,11 @@
 ## Release Notes for the AEVI Printer Driver API
 
+## Version 1.1.3
+
+* Added framework classes to aid developers wishing to build a printer driver
+* Added the demo to use the printer driver framework
+* Removed printing permissions from the demo as they are no longer required
+
 ## Version 1.1.2
 
 * Updated to android-pos-print-api version 1.1.3

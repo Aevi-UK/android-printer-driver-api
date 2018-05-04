@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">DemoPrinterFrameworkDriverApplication</string>
+    <string name="app_driver_name">Demo Printer Framework Driver</string>
+    <string name="properties_name">Demo Printer Framework Properties</string>
+
+    <string name="printer_id_title">Displaying properties for printer</string>
+    <string name="printer_id">[Printer Id Not Given]</string>
+    <string name="printing_service_failure">Printing failed: service is not active.</string>
+</resources>

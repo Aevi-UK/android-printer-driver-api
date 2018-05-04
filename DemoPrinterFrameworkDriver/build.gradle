@@ -8,7 +8,7 @@ android {
     buildToolsVersion "${androidBuildVersion}"
 
     defaultConfig {
-        applicationId "com.aevi.demoprinterdriver"
+        applicationId "com.aevi.demoprinterdriver.framework"
         minSdkVersion projectMinSdkVersion
         targetSdkVersion projectTargetSdkVersion
         versionCode demoVersionCode

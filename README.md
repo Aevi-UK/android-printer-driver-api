@@ -25,14 +25,34 @@ repositories section.
 And then add to your dependencies section
 
 ```
-implementation 'com.aevi.print:printer-driver-api:1.1.2'
+implementation 'com.aevi.print:printer-driver-api:1.1.3'
 
 ```
 
+# The printer driver framework API
+
+The printer driver framework is an optional framework that simplifies the task of writing 
+a new printer driver and sits on top of the printer driver API. 
+For full documentation of this framework please see the 
+[printer driver Wiki](https://github.com/Aevi-UK/android-printer-driver-api/wiki)
+
+
+# Printer driver demos
+The are two demos of printer drivers that show how to use the lower level printer driver API 
+and also the driver framework classes.
+
 ## DemoPrinterDriver
 
-The `DemoPrinterDriver` application contained here is an example printer driver implementing this API. This driver will print to the standard Android
+The `DemoPrinterDriver` application contained here is an example printer driver implementing this directly API. 
+This driver will print to the standard Android
 PrintManager, in a real example you would replace the Android PrintManager with calls to the manufacturer specific API/SDK for the physical printer device.
+
+## DemoPrinterFrameworkDriver
+
+The `DemoPrinterFrameworkDriver` application is an example printer driver that uses the 
+the printer driver framework to implement the printer driver. 
+In order to covert the demo into a functional printer driver then the `DemoPrinterDriver` class
+needs updating with calls to the manufacturer specific API/SDK for the physical printer device.
 
 
 # Full Documentation
