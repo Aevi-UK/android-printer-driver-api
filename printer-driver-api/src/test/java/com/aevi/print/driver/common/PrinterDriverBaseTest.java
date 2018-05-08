@@ -117,7 +117,7 @@ public class PrinterDriverBaseTest {
     @Test
     public void aFailedConnectionDoesNotPrint() {
 
-        printerDriverImpl.setAutomaticOnFatalError("FATAL-ERROR");
+        printerDriverImpl.setAutomaticOnDriverError("DRIVER-ERROR");
 
         TestObserver<PrintJob> obs = printerDriverImpl.print(new PrintPayload("ID-1")).test();
         assertThat(printerDriverImpl.connectToPrinterCounter).isEqualTo(1);
@@ -125,7 +125,7 @@ public class PrinterDriverBaseTest {
 
         assertThat(printerDriverImpl.executePrintActionTaskCounter).isEqualTo(0);
         assertThat(printerDriverImpl.disconnectFromPrinterCounter).isEqualTo(0);
-        assertCompleteAndFailedWithTheReason(obs, "FATAL-ERROR");
+        assertCompleteAndFailedWithTheReason(obs, "DRIVER-ERROR");
     }
 
     @Test
@@ -230,11 +230,11 @@ public class PrinterDriverBaseTest {
     }
 
     @Test
-    public void onAnFatalErrorCancelsOtherTasks() {
+    public void onDriverErrorMethodCancelsOtherTasks() {
 
         printerDriverImpl.sendPrinterAction("Printer-Action");
         TestObserver<PrintJob> obs = printerDriverImpl.print(new PrintPayload("ID-1")).test();
-        printerDriverImpl.onFatalError("TEST-ERROR", null);
+        printerDriverImpl.onDriverError("TEST-ERROR", null);
         assertCompleteAndFailedWithTheReason(obs, "TEST-ERROR");
 
         assertThat(printerDriverImpl.connectToPrinterCounter).isEqualTo(1);
