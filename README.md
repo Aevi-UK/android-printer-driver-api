@@ -51,7 +51,7 @@ PrintManager, in a real example you would replace the Android PrintManager with 
 
 The `DemoPrinterFrameworkDriver` application is an example printer driver that uses the 
 the printer driver framework to implement the printer driver. 
-In order to covert the demo into a functional printer driver then the `DemoPrinterDriver` class
+In order to convert the demo into a functional printer driver then the `DemoPrinterDriver` class
 needs updating with calls to the manufacturer specific API/SDK for the physical printer device.
 
 
