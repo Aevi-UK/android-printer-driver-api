@@ -71,13 +71,13 @@ public abstract class PrinterDriverBase<T extends BasePrinterInfo> {
     /**
      * The implementation of this method should open a connection to the printer.
      * When the connection has completed successfully then the method {@link #onPrinterConnected} should be called.
-     * If there is an error during the connection then {@link #onFatalError} should be called instead.
+     * If there is an error during the connection then {@link #onDriverError} should be called instead.
      */
     protected abstract void connectToPrinter();
 
     /**
      * The implementation of this method should close the connection to the printer
-     * and call {@link #onPrinterDisconnected} on completion or alternatively call {@link #onFatalError} if there has been an error.
+     * and call {@link #onPrinterDisconnected} on completion or alternatively call {@link #onDriverError} if there has been an error.
      */
     protected abstract void disconnectFromPrinter();
 
@@ -85,7 +85,7 @@ public abstract class PrinterDriverBase<T extends BasePrinterInfo> {
      * This method is called after the printer connection has been made and when there is data ready to be printed.
      * The implementation of this method should convert the printer payload to a form the printer will accept and then send it the printer.
      * When the printing has been completed successfully call  {@link #onTaskCompletedSuccessfully}.
-     * Otherwise if there is an error call {@link #onPrintingFailed} or {@link #onFatalError} instead.
+     * Otherwise if there is an error call {@link #onPrintingFailed} or {@link #onDriverError} instead.
      *
      * @param printPayload the printer payload that is be printed.
      */
@@ -96,7 +96,7 @@ public abstract class PrinterDriverBase<T extends BasePrinterInfo> {
      * a printer action to be carried by the printer.
      *
      * The method {@link #onTaskCompletedSuccessfully} should be called on completion or
-     * call {@link #onFatalError} or {@link #onActionFailed} when there has been an error.
+     * call {@link #onDriverError} or {@link #onActionFailed} when there has been an error.
      *
      * @param printAction The print action command to be carried out by the printer (e.g. open the cash drawer)
      */
@@ -113,7 +113,7 @@ public abstract class PrinterDriverBase<T extends BasePrinterInfo> {
 
     /**
      * This method must be called after the connection to the printer has been closed.
-     * Calling {@link #onFatalError} instead will also mark the connection as closed.
+     * Calling {@link #onDriverError} instead will also mark the connection as closed.
      */
     public void onPrinterDisconnected() {
         Log.d(TAG, "Disconnected from printer " + printerInfo.getPrinterId());
@@ -228,7 +228,7 @@ public abstract class PrinterDriverBase<T extends BasePrinterInfo> {
 
     /**
      * This method must be called when a task (see {@link #executePrintPayloadTask} or {@link #executePrintActionTask}) has been completed successfully.
-     * If there is error then call {@link #onFatalError} {@link #onPrintingFailed} or {@link #onActionFailed} instead.
+     * If there is error then call {@link #onDriverError} {@link #onPrintingFailed} or {@link #onActionFailed} instead.
      */
     public void onTaskCompletedSuccessfully() {
         Log.d(TAG, "Printing task completed successfully for printer : " + printerInfo.getPrinterId());
@@ -246,8 +246,8 @@ public abstract class PrinterDriverBase<T extends BasePrinterInfo> {
      * @param failedReason      The reason giving the cause of any failure
      * @param diagnosticMessage A diagnostic message to include with the failedReason
      */
-    public void onFatalError(@NonNull String failedReason, String diagnosticMessage) {
-        Log.w(TAG, "Fatal printing error : " + failedReason + " - " + diagnosticMessage);
+    public void onDriverError(@NonNull String failedReason, String diagnosticMessage) {
+        Log.w(TAG, "Printer driver error : " + failedReason + " - " + diagnosticMessage);
         if (!completePrintJob(new PrintJob(PrintJob.State.FAILED, failedReason, diagnosticMessage))) {
             emitPrinterStatus(failedReason);
         }

@@ -32,7 +32,7 @@ class DemoPrinterDriver extends PrinterDriverBase<DemoPrinterInfo> {
         // Add code to connect to the printer
 
         // If there is an error call this method
-        // onFatalError(PrinterMessages.PRINTER_OFFLINE, "diagnostic message goe here");
+        // onDriverError(PrinterMessages.PRINTER_OFFLINE, "diagnostic message goe here");
 
         // only call this method if the connection is successful
         onPrinterConnected();
@@ -44,7 +44,7 @@ class DemoPrinterDriver extends PrinterDriverBase<DemoPrinterInfo> {
         // Add code to disconnect from the printer
 
         // If there is an error call this method
-        // onFatalError(PrinterMessages.PRINTER_OFFLINE, "diagnostic message goe here");
+        // onDriverError(PrinterMessages.PRINTER_OFFLINE, "diagnostic message goe here");
 
         // only if the disconnection is successful then call this method
         onPrinterDisconnected();

@@ -31,7 +31,7 @@ public class PrinterDriverImplementation extends PrinterDriverBase<FakePrinterIn
     private boolean automaticOnTaskCompleted;
     private String automaticOnActionFailed;
     private String automaticOnPrintingFailed;
-    private String automaticOnFatalError;
+    private String automaticOnDriverError;
 
     public PrinterDriverImplementation(BasePrinterInfo printerInfo) {
         super(printerInfo);
@@ -42,8 +42,8 @@ public class PrinterDriverImplementation extends PrinterDriverBase<FakePrinterIn
         connectToPrinterCounter++;
         if (automaticOnPrinterConnected) {
             onPrinterConnected();
-        } else if (automaticOnFatalError != null) {
-            onFatalError(automaticOnFatalError, DIAGNOSTIC_MESSAGE);
+        } else if (automaticOnDriverError != null) {
+            onDriverError(automaticOnDriverError, DIAGNOSTIC_MESSAGE);
         }
     }
 
@@ -84,8 +84,8 @@ public class PrinterDriverImplementation extends PrinterDriverBase<FakePrinterIn
         automaticOnTaskCompleted = true;
     }
 
-    public void setAutomaticOnFatalError(String failedReason) {
-        automaticOnFatalError = failedReason;
+    public void setAutomaticOnDriverError(String failedReason) {
+        automaticOnDriverError = failedReason;
     }
 
     public void setAutomaticOnPrintingFailed(String failedReason) {
