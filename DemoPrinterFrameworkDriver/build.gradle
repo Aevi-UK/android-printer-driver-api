@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
-ext.demoVersionCode = 5
-ext.demoVersion = "1.0.1"
+ext.demoVersionCode = 1
+ext.demoVersion = "1.0.0"
 
 android {
     compileSdkVersion projectTargetSdkVersion
@@ -28,6 +28,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation project(':printer-driver-api')
+    // In your own project replace the line above with the implementation below
+    // implementation 'com.aevi.print:printer-driver-api:1.1.3'
 
     implementation presentationDependencies.butterKnife
     annotationProcessor aptDependencies.butterKnife
