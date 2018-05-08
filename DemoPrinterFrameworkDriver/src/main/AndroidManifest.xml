@@ -10,7 +10,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<manifest package="com.aevi.demoprinterdriver"
+<manifest package="com.aevi.demoprinterdriver.framework"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
@@ -38,7 +38,7 @@
         </activity>
 
         <service
-            android:name=".DemoPrinterDriverService"
+            android:name=".service.DemoPrinterDriverService"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.aevi.printer.driver.SERVICE"/>
@@ -46,31 +46,31 @@
 
             <meta-data
                 android:name="configuration-authority"
-                android:value="com.aevi.demoprinterdriver.config"/>
+                android:value="com.aevi.demoprinterdriver.framework.config"/>
             <meta-data
                 android:name="printer-driver-name"
                 android:value="@string/app_driver_name"/>
             <meta-data
                 android:name="action-service"
-                android:value="com.aevi.demoprinterdriver.DemoPrinterActionService"/>
+                android:value="com.aevi.demoprinterdriver.framework.service.DemoPrinterActionService"/>
             <meta-data
                 android:name="status-service"
-                android:value="com.aevi.demoprinterdriver.DemoPrinterStatusService"/>
+                android:value="com.aevi.demoprinterdriver.framework.service.DemoPrinterStatusService"/>
         </service>
 
         <service
-            android:name=".DemoPrinterActionService"
+            android:name=".service.DemoPrinterActionService"
             android:exported="true">
         </service>
 
         <service
-            android:name=".DemoPrinterStatusService"
+            android:name=".service.DemoPrinterStatusService"
             android:exported="true">
         </service>
 
         <provider
-            android:name="com.aevi.demoprinterdriver.DemoPrinterSettingsProvider"
-            android:authorities="com.aevi.demoprinterdriver.config"
+            android:name=".service.DemoPrinterSettingsProvider"
+            android:authorities="com.aevi.demoprinterdriver.framework.config"
             android:exported="true"/>
 
         <meta-data
