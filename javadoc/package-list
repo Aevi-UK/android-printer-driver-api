@@ -1,2 +1,4 @@
 com.aevi.print.driver
+com.aevi.print.driver.common
+com.aevi.print.driver.common.service
 com.aevi.print.model
