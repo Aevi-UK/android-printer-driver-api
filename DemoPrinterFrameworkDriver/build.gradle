@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
-ext.demoVersionCode = 6
-ext.demoVersion = "1.0.2"
+ext.demoVersionCode = 1
+ext.demoVersion = "1.0.0"
 
 android {
     compileSdkVersion projectTargetSdkVersion
     buildToolsVersion "${androidBuildVersion}"
 
     defaultConfig {
-        applicationId "com.aevi.demoprinterdriver"
+        applicationId "com.aevi.demoprinterdriver.framework"
         minSdkVersion projectMinSdkVersion
         targetSdkVersion projectTargetSdkVersion
         versionCode demoVersionCode

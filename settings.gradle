@@ -1,2 +1,3 @@
-include ':printer-driver-api', ':DemoPrinterDriver'
-
+include ':printer-driver-api'
+include ':DemoPrinterDriver'
+include ':DemoPrinterFrameworkDriver'

@@ -45,7 +45,6 @@ import com.aevi.print.model.PrinterSettingsList;
  */
 public abstract class BasePrinterSettingsProvider extends ContentProvider {
 
-    private static final String READ_PRINTER_CONFIGURATION = "com.aevi.permission.READ_PRINTER_CONFIGURATION";
     public static final String ACTION_BROADCAST_CONFIG_CHANGE = "com.aevi.intent.action.PRINTER_DRIVER_CONFIG_CHANGE";
     public static final String CONFIGURATION_KEY = "configuration";
     public static final String PROPERTIES_KEY = "properties";
@@ -79,10 +78,6 @@ public abstract class BasePrinterSettingsProvider extends ContentProvider {
 
     @Override
     public final Bundle call(String method, String arg, Bundle extras) {
-        if (getContext().checkCallingPermission(READ_PRINTER_CONFIGURATION) == PackageManager.PERMISSION_DENIED) {
-            throw new SecurityException("Caller does not have the appropriate permissions");
-        }
-
         Bundle b = new Bundle();
         switch (method) {
             case METHOD_ALL:
