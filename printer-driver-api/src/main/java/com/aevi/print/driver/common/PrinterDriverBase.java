@@ -47,14 +47,14 @@ public abstract class PrinterDriverBase<T extends BasePrinterInfo> {
     private final AtomicReference<PrintJobTask> printJobTask = new AtomicReference<>();
     private final AtomicReference<String> printActionTask = new AtomicReference<>();
 
-    private final BasePrinterInfo printerInfo;
+    private final @NonNull BasePrinterInfo printerInfo;
 
     /**
      * The constructor for PrinterDriverBase
      *
      * @param printerInfo The class providing the details of the printer
      */
-    public PrinterDriverBase(BasePrinterInfo printerInfo) {
+    public PrinterDriverBase(@NonNull BasePrinterInfo printerInfo) {
 
         this.printerInfo = printerInfo;
     }
@@ -64,7 +64,8 @@ public abstract class PrinterDriverBase<T extends BasePrinterInfo> {
      *
      * @return The class providing the details of the printer
      */
-    public T getPrinterInfo() {
+
+    public @NonNull T getPrinterInfo() {
         return (T) printerInfo;
     }
 

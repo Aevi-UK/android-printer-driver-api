@@ -13,6 +13,8 @@
  */
 package com.aevi.print.driver.common;
 
+import android.support.annotation.NonNull;
+
 import com.aevi.print.model.BasePrinterInfo;
 
 import java.util.HashMap;
@@ -36,7 +38,7 @@ public abstract class PrinterDriverFactory {
      * @param printerInfo the class providing the details of the printer
      * @return the instance of the printer driver
      */
-    public PrinterDriverBase getPrinterDriver(final BasePrinterInfo printerInfo) {
+    public PrinterDriverBase getPrinterDriver(@NonNull final BasePrinterInfo printerInfo) {
         String printerId = printerInfo.getPrinterId();
         synchronized (printerDrivers) {
             PrinterDriverBase printerDriver = printerDrivers.get(printerId);
@@ -64,5 +66,5 @@ public abstract class PrinterDriverFactory {
      * @param printerInfo The class providing the details of the printer
      * @return the new instance of the printer driver to be used
      */
-    protected abstract PrinterDriverBase createPrinterDriver(BasePrinterInfo printerInfo);
+    @NonNull protected abstract PrinterDriverBase createPrinterDriver(@NonNull BasePrinterInfo printerInfo);
 }

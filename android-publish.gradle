@@ -10,7 +10,11 @@ configurations {
 }
 
 dependencies {
-    javadoc_extra_jars "${domainDependencies.rxJava}@jar", "${domainDependencies.rxMessenger}@jar", "${domainDependencies.printApi}@jar"
+    javadoc_extra_jars "${domainDependencies.rxJava}@jar",
+            "${domainDependencies.rxMessenger}@jar",
+            "${domainDependencies.printApi}@jar",
+            "${domainDependencies.jsonConverter}@jar",
+            "${presentationDependencies.supportAnnotation}@jar"
 }
 
 task javadoc(type: Javadoc) {
@@ -61,14 +65,16 @@ def pomConfig = {
 publishing {
     publications {
         print(MavenPublication) {
-            groupId group
+            groupId 'com.aevi.print'
             artifactId "${artifactId}"
-            version version
+            version "${apiVersion}"
 
-            artifact jarRelease
-            artifact bundleRelease
-            artifact javadocJar
-            artifact sourcesJar
+            afterEvaluate {
+                artifact jarRelease
+                artifact bundleReleaseAar
+                artifact javadocJar
+                artifact sourcesJar
+            }
 
             pom.withXml {
                 def root = asNode()
@@ -114,4 +120,3 @@ bintray {
         publicDownloadNumbers = true
     }
 }
-
