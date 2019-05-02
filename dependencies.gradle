@@ -14,8 +14,9 @@ ext {
 
     junitVersion = '4.12'
     mockitoVersion = '1.10.19'
-    robolectricVersion = '3.3.2'
     assertJVersion = '2.7.0'
+    androidMockableVersion = '26'
+    robolectricVersion = '3.3.2'
 
     printApiVersion = '1.1.4' // TODO upgrade to '1.1.5-RC1
 
@@ -29,10 +30,11 @@ ext {
     ]
 
     domainDependencies = [
-            printApi     : "com.aevi.print:print-api:$printApiVersion",
-            rxMessenger  : "com.aevi.android:rxmessenger:$rxMessengerVersion",
-            rxJava       : "io.reactivex.rxjava2:rxjava:$rxJavaVersion",
-            jsonConverter: "com.aevi.util:json-converter:$jsonConverterVersion",
+            printApi       : "com.aevi.print:print-api:$printApiVersion",
+            androidMockable: "com.google:android-mockable-default-values:$androidMockableVersion",
+            rxMessenger    : "com.aevi.android:rxmessenger:$rxMessengerVersion",
+            rxJava         : "io.reactivex.rxjava2:rxjava:$rxJavaVersion",
+            jsonConverter  : "com.aevi.util:json-converter:$jsonConverterVersion",
     ]
 
     testDependencies = [

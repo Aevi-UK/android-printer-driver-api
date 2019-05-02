@@ -1,28 +1,22 @@
-apply plugin: 'com.android.library'
+apply plugin: 'java-library'
 apply plugin: 'com.jfrog.bintray'
+
+group = 'com.aevi.print'
+version = "${apiVersion}"
 
 apply from: '../publish-repo.gradle'
 
-version = "1.1.4-LBSNAPSHOT"
-
-android {
-    compileSdkVersion projectTargetSdkVersion
-
-    defaultConfig {
-        minSdkVersion projectMinSdkVersion
-    }
-}
-
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
+    compileOnly domainDependencies.androidMockable
     api domainDependencies.printApi
     api domainDependencies.rxMessenger
     api presentationDependencies.supportAnnotation
 
+    testImplementation domainDependencies.androidMockable
     testImplementation testDependencies.junit
     testImplementation testDependencies.robolectric
     testImplementation testDependencies.mockito
 }
 
-apply from: '../android-publish.gradle'
+apply from: '../jar-publisher.gradle'
+apply from: '../bintray-pos-apis.gradle'

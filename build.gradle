@@ -12,7 +12,6 @@ buildscript {
 
 version = "1.1.4-SNAPSHOT"
 ext.versionCode = 10104001 // semver based, MMmmppbbb (major minor patch build) without leading 0 for MM
-ext.artifactId = 'print-driver-api'
 
 allprojects {
 
@@ -25,8 +24,13 @@ allprojects {
         google()
         jcenter()
         mavenCentral()
+
         maven {
             url "http://dl.bintray.com/aevi/aevi-uk"
+        }
+
+        maven {
+            url "http://sdk-public-artifacts.s3-website-eu-west-1.amazonaws.com/maven2"
         }
 
         if (project.hasProperty('aws_accessid')) {
