@@ -41,10 +41,9 @@ import static com.aevi.print.model.PrinterMessages.ERROR_PRINT_FAILED;
 
 public class AndroidPrintActivity extends Activity {
 
-    private static final String TAG = AndroidPrintActivity.class.getSimpleName();
-
     public static final String KEY_PAYLOAD = "payload";
     public static final String KEY_PRINTER_SETTINGS = "settings";
+    private static final String TAG = AndroidPrintActivity.class.getSimpleName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,7 +76,7 @@ public class AndroidPrintActivity extends Activity {
         } catch (Throwable t) {
             // YES we are catching all exceptions here
             Log.e(TAG, "Failed to print via Android", t);
-            resultHelper.returnError(new MessageException(ERROR_PRINT_FAILED, t.getMessage()));
+            resultHelper.sendErrorToClient(new MessageException(ERROR_PRINT_FAILED, t.getMessage()));
         }
     }
 
@@ -91,7 +90,7 @@ public class AndroidPrintActivity extends Activity {
         helper.printBitmap(jobName, printBitmap, new OnPrintFinishCallback() {
             @Override
             public void onFinish() {
-                resultHelper.publishResponse(new PrintJob(PRINTED));
+                resultHelper.sendMessageToClient(new PrintJob(PRINTED));
                 printBitmap.recycle();
                 finish();
             }

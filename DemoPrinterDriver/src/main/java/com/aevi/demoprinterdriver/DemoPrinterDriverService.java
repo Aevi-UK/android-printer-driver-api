@@ -24,6 +24,7 @@ import com.aevi.print.model.PrintJob;
 import com.aevi.print.model.PrintPayload;
 import com.aevi.print.model.PrinterMessages;
 import com.aevi.print.model.PrinterSettings;
+import com.aevi.print.model.PrintingContext;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
@@ -39,7 +40,7 @@ public class DemoPrinterDriverService extends BasePrinterDriverService {
     private static final String TAG = DemoPrinterDriverService.class.getSimpleName();
 
     @Override
-    protected void print(final String clientId, final PrintPayload payload) {
+    protected void print(final PrintingContext printingContext, final PrintPayload payload) {
         Log.d(TAG, "Got print request: " + payload.getPrinterId());
         PrinterSettings[] printerSettings = PrinterSettingsHolder.getInstance().getPrinterSettings();
 
@@ -53,14 +54,14 @@ public class DemoPrinterDriverService extends BasePrinterDriverService {
                 new Consumer<PrintJob>() {
                     @Override
                     public void accept(@NonNull PrintJob printJob) throws Exception {
-                        sendMessageToClient(clientId, printJob.toJson());
-                        sendEndStreamMessageToClient(clientId);
+                        printingContext.send(printJob.toJson());
+                        printingContext.sendEndStream();
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
                         Log.e(TAG, "Print failed", throwable);
-                        sendErrorMessageToClient(clientId, PrinterMessages.ERROR_PRINT_FAILED,
+                        printingContext.sendError(PrinterMessages.ERROR_PRINT_FAILED,
                                 "Failed to print: " + throwable.getMessage());
                     }
                 });

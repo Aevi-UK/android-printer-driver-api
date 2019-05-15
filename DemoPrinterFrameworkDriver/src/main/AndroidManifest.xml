@@ -22,12 +22,6 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".ui.AndroidPrintActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
-
-        </activity>
-
-        <activity
             android:name=".ui.PrinterPropertiesActivity"
             android:label="@string/properties_name"
             android:theme="@style/AppTheme">

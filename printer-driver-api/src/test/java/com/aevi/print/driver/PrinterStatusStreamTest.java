@@ -14,17 +14,18 @@
 package com.aevi.print.driver;
 
 import com.aevi.print.model.PrinterStatus;
+import com.aevi.print.model.PrintingContext;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.robolectric.shadows.ShadowLog;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -43,58 +44,67 @@ public class PrinterStatusStreamTest {
     public void setup() {
         ShadowLog.stream = System.out;
         initMocks(this);
-        printerStatusStream = new PrinterStatusStream(mockPrinterStatusService);
+        printerStatusStream = new PrinterStatusStream();
     }
 
     @Test
     public void canSubscribeToPrinterStatuses() {
-        printerStatusStream.subscribeToStatus("12344", "123456");
+        PrintingContext printingContext = Mockito.mock(PrintingContext.class);
+
+        printerStatusStream.subscribeToStatus(printingContext, "123456");
 
         PrinterStatusStream.emitStatus("123456", "Hello");
 
-        verifyStatusWasSent("12344", "Hello");
+        verifyStatusWasSent(printingContext, "Hello");
     }
 
     @Test
     public void checkWontGetStatusFromOtherPrinterId() {
-        printerStatusStream.subscribeToStatus("12344", "765431");
+        PrintingContext printingContext = Mockito.mock(PrintingContext.class);
+
+        printerStatusStream.subscribeToStatus(printingContext, "765431");
 
         PrinterStatusStream.emitStatus("123456", "Hello");
 
-        verifyStatusWasNotSent();
+        verifyStatusWasNotSent(printingContext);
     }
 
     @Test
     public void checkMultipleSubscriptions() {
-        printerStatusStream.subscribeToStatus("16166", "123456");
-        printerStatusStream.subscribeToStatus("16167", "123456");
+        PrintingContext printingContext = Mockito.mock(PrintingContext.class);
+        PrintingContext printingContext2 = Mockito.mock(PrintingContext.class);
+
+        printerStatusStream.subscribeToStatus(printingContext, "123456");
+        printerStatusStream.subscribeToStatus(printingContext2, "123456");
 
         PrinterStatusStream.emitStatus("123456", "Hello");
 
-        verifyStatusWasSent("16166", "Hello");
-        verifyStatusWasSent("16167", "Hello");
+        verifyStatusWasSent(printingContext, "Hello");
+        verifyStatusWasSent(printingContext2, "Hello");
     }
 
     @Test
     public void canFinishPrinterStatusStream() {
-        printerStatusStream.subscribeToStatus("77372", "123456");
+        PrintingContext printingContext = Mockito.mock(PrintingContext.class);
+
+        printerStatusStream.subscribeToStatus(printingContext, "123456");
 
         PrinterStatusStream.finishPrinter("123456");
 
-        verifyEndWasSent("77372");
+        verifyEndWasSent(printingContext);
     }
 
-    private void verifyEndWasSent(String requestId) {
-        verify(mockPrinterStatusService).sendEndStreamMessageToClient(eq(requestId));
+    private void verifyEndWasSent(PrintingContext printingContext) {
+        verify(printingContext).sendEndStream();
     }
 
-    private void verifyStatusWasSent(String requestId, String status) {
+    private void verifyStatusWasSent(PrintingContext printingContext, String status) {
         ArgumentCaptor<String> printerStatusArgumentCaptor = ArgumentCaptor.forClass(String.class);
-        verify(mockPrinterStatusService).sendMessageToClient(eq(requestId), printerStatusArgumentCaptor.capture());
+        verify(printingContext).send(printerStatusArgumentCaptor.capture());
         assertThat(PrinterStatus.fromJson(printerStatusArgumentCaptor.getValue()).getStatus()).isEqualTo(status);
     }
 
-    private void verifyStatusWasNotSent() {
-        verify(mockPrinterStatusService, times(0)).sendMessageToClient(anyString(), anyString());
+    private void verifyStatusWasNotSent(PrintingContext printingContext) {
+        verify(printingContext, times(0)).send(anyString());
     }
 }

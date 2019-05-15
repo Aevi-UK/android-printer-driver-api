@@ -18,6 +18,7 @@ import com.aevi.print.driver.PrinterStatusStream;
 import com.aevi.print.driver.common.PrinterDriverFactory;
 import com.aevi.print.model.BasePrinterInfo;
 import com.aevi.print.model.PrinterMessages;
+import com.aevi.print.model.PrintingContext;
 
 import static com.aevi.print.util.Preconditions.checkNotNull;
 
@@ -50,12 +51,13 @@ public abstract class CommonPrinterStatusService extends BasePrinterStatusServic
 
     /**
      * The implementation method that prints the payload
-     * @param clientId the unique client id
-     * @param printerId the printer id that uniquely identifies each printer.
-     * @param packageName the calling package name.
+     *
+     * @param printingContext the printing context
+     * @param printerId       the printer id that uniquely identifies each printer.
+     * @param packageName     the calling package name.
      */
     @Override
-    protected void handleRequest(String clientId, String printerId, String packageName) {
+    public void handleRequest(PrintingContext printingContext, String printerId, String packageName) {
         checkNotNull(printerDriverFactory, "setPrinterDriverFactory must be set before the handleRequest method is called");
 
         final BasePrinterInfo printerInfo = getDeviceInfo(printerId);
@@ -65,6 +67,6 @@ public abstract class CommonPrinterStatusService extends BasePrinterStatusServic
             return;
         }
 
-        super.handleRequest(clientId, printerId, packageName);
+        super.handleRequest(printingContext, printerId, packageName);
     }
 }

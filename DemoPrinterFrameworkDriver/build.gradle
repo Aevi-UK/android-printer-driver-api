@@ -58,6 +58,8 @@ dependencies {
     implementation presentationDependencies.butterKnife
     annotationProcessor aptDependencies.butterKnife
 
+    api domainDependencies.rxJava
+
     implementation(presentationDependencies.support) { force = true }
     implementation(presentationDependencies.appCompat) { force = true }
     implementation(presentationDependencies.recyclerView) { force = true }

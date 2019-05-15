@@ -22,6 +22,7 @@ import com.aevi.print.model.BasePrinterInfo;
 import com.aevi.print.model.PrintJob;
 import com.aevi.print.model.PrintPayload;
 import com.aevi.print.model.PrinterMessages;
+import com.aevi.print.model.PrintingContext;
 
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
@@ -60,24 +61,25 @@ public abstract class CommonPrinterDriverService extends BasePrinterDriverServic
 
     /**
      * The implementation method that prints the payload
-     * @param clientId the unique client id
-     * @param payload the payload to be sent to the pinter
+     *
+     * @param printingContext the printing context
+     * @param payload       the payload to be sent to the pinter
      */
     @Override
-    protected void print(final String clientId, PrintPayload payload) {
+    protected void print(final PrintingContext printingContext, PrintPayload payload) {
         checkNotNull(printerDriverFactory, "setPrinterDriverFactory must be set before the print method is called");
         if (payload == null) {
-            sendErrorMessageToClient(clientId, PrinterMessages.ERROR_PRINT_FAILED, "print payload cannot be null ");
+            printingContext.sendError(PrinterMessages.ERROR_PRINT_FAILED, "print payload cannot be null");
             return;
         }
 
-        Log.d(TAG, "Got print request: " + clientId);
+        Log.d(TAG, "Got print request: " + printingContext);
         String printerId = payload.getPrinterId();
 
         final BasePrinterInfo printerInfo = getDeviceInfo(printerId);
         if (printerInfo == null) {
             printerDriverFactory.deletePrinterDriver(printerId);
-            sendMessageToClient(clientId, new PrintJob(FAILED, PrinterMessages.ERROR_PRINTER_NOT_FOUND, "Unknown printer").toJson());
+            printingContext.send(new PrintJob(FAILED, PrinterMessages.ERROR_PRINTER_NOT_FOUND, "Unknown printer").toJson());
             return;
         }
 
@@ -94,18 +96,18 @@ public abstract class CommonPrinterDriverService extends BasePrinterDriverServic
 
                     @Override
                     public void onNext(@NonNull PrintJob printJob) {
-                        sendMessageToClient(clientId, printJob.toJson());
+                        printingContext.send(printJob.toJson());
                     }
 
                     @Override
                     public void onError(@NonNull Throwable throwable) {
                         Log.e(TAG, "Print failed", throwable);
-                        sendErrorMessageToClient(clientId, PrinterMessages.ERROR_PRINT_FAILED, "Failed to print: " + throwable.getMessage());
+                        printingContext.sendError(PrinterMessages.ERROR_PRINT_FAILED, "Failed to print: " + throwable.getMessage());
                     }
 
                     @Override
                     public void onComplete() {
-                        sendEndStreamMessageToClient(clientId);
+                        printingContext.sendEndStream();
                     }
                 });
     }

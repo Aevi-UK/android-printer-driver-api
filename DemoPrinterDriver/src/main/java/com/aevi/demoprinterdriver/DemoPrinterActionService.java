@@ -14,11 +14,11 @@
 package com.aevi.demoprinterdriver;
 
 import com.aevi.print.driver.BasePrinterActionService;
+import com.aevi.print.model.PrintingContext;
 
 public class DemoPrinterActionService extends BasePrinterActionService {
 
     @Override
-    protected void action(String clientId, String printerId, String action) {
-
+    protected void action(PrintingContext printingContext, String printerId, String action) {
     }
 }
