@@ -49,16 +49,12 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
     implementation project(':printer-driver-api')
     // In your own project replace the line above with the implementation below
-    // implementation 'com.aevi.print:printer-driver-api:1.1.4'
+    // implementation 'com.aevi.print:printer-driver-api:1.1.5'
 
     implementation presentationDependencies.butterKnife
     annotationProcessor aptDependencies.butterKnife
-
-    api domainDependencies.rxJava
 
     implementation(presentationDependencies.support) { force = true }
     implementation(presentationDependencies.appCompat) { force = true }
