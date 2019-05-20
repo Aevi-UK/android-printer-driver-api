@@ -15,6 +15,8 @@ package com.aevi.demoprinterdriver.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.print.PrintHelper;
@@ -30,6 +32,7 @@ import com.aevi.print.model.PrintJob;
 import com.aevi.print.model.PrintPayload;
 import com.aevi.print.model.PrinterSettings;
 
+import java.util.List;
 import java.util.UUID;
 
 import static android.support.v4.print.PrintHelper.COLOR_MODE_MONOCHROME;
@@ -70,13 +73,32 @@ public class AndroidPrintActivity extends Activity {
             return;
         }
 
-        try {
-            String jobName = UUID.randomUUID().toString();
-            handleSimplePrint(payload, printerSettings, resultHelper, jobName);
-        } catch (Throwable t) {
-            // YES we are catching all exceptions here
-            Log.e(TAG, "Failed to print via Android", t);
-            resultHelper.sendErrorToClient(new MessageException(ERROR_PRINT_FAILED, t.getMessage()));
+        if (isAndroidPrintServiceInstalled()) {
+            try {
+                String jobName = UUID.randomUUID().toString();
+                handleSimplePrint(payload, printerSettings, resultHelper, jobName);
+            } catch (Throwable t) {
+                // YES we are catching all exceptions here
+                Log.e(TAG, "Failed to print via Android", t);
+                resultHelper.sendErrorToClient(new MessageException(ERROR_PRINT_FAILED, t.getMessage()));
+            }
+        } else {
+            resultHelper.sendErrorToClient(new MessageException(ERROR_PRINT_FAILED, "Android print service is unavailable"));
+            finish();
+        }
+    }
+
+    public boolean isAndroidPrintServiceInstalled() {
+
+        PackageManager packageManager = getPackageManager();
+        List<ResolveInfo> resolveInfo = packageManager.queryIntentServices(new Intent("android.printservice.PrintService"), 0);
+
+        if (resolveInfo != null && resolveInfo.size() > 0) {
+            Log.i(TAG, "Android print service is available");
+            return true;
+        } else {
+            Log.i(TAG, "Android print service is unavailable");
+            return false;
         }
     }
 

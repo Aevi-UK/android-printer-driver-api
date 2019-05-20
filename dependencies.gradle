@@ -19,7 +19,7 @@ ext {
     androidMockableVersion = '26'
     robolectricVersion = '3.3.2'
 
-    printApiVersion = '1.1.4' // TODO upgrade to '1.1.5-RC1
+    printApiVersion = '1.1.5-RC2'
 
     presentationDependencies = [
             butterKnife      : "com.jakewharton:butterknife:$butterKnifeVersion",
