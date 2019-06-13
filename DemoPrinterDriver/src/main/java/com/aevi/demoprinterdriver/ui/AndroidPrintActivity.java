@@ -19,7 +19,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.print.PrintHelper;
+import androidx.print.PrintHelper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -35,10 +35,10 @@ import com.aevi.print.model.PrinterSettings;
 import java.util.List;
 import java.util.UUID;
 
-import static android.support.v4.print.PrintHelper.COLOR_MODE_MONOCHROME;
-import static android.support.v4.print.PrintHelper.ORIENTATION_PORTRAIT;
-import static android.support.v4.print.PrintHelper.OnPrintFinishCallback;
-import static android.support.v4.print.PrintHelper.SCALE_MODE_FIT;
+import static androidx.print.PrintHelper.COLOR_MODE_MONOCHROME;
+import static androidx.print.PrintHelper.ORIENTATION_PORTRAIT;
+import static androidx.print.PrintHelper.OnPrintFinishCallback;
+import static androidx.print.PrintHelper.SCALE_MODE_FIT;
 import static com.aevi.print.model.PrintJob.State.PRINTED;
 import static com.aevi.print.model.PrinterMessages.ERROR_PRINT_FAILED;
 

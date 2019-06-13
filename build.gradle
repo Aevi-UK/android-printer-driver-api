@@ -10,8 +10,8 @@ buildscript {
     }
 }
 
-version = "2.0.0-RC1"
-ext.versionCode = 20000002 // semver based, MMmmppbbb (major minor patch build) without leading 0 for MM
+version = "2.0.0-RC2"
+ext.versionCode = 20000003 // semver based, MMmmppbbb (major minor patch build) without leading 0 for MM
 
 allprojects {
 

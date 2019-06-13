@@ -5,6 +5,7 @@
 * Update internal JSON classes to use general purpose AEVI json-utils library in favour of local classes. 
 * Update underlying rx-messenger library to v5.0.2.
 * Upgraded the build tools.
+* Upgrade demo drivers to androidx.
 
 ## Version 1.1.3
 
