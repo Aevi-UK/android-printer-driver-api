@@ -17,7 +17,7 @@ ext {
     androidMockableVersion = '26'
     robolectricVersion = '3.3.2'
 
-    printApiVersion = '1.1.5-RC3'
+    printApiVersion = '1.1.5-RC5'
 
     presentationDependencies = [
             butterKnife      : "com.jakewharton:butterknife:$butterKnifeVersion",
