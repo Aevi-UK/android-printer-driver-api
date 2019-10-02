@@ -26,4 +26,5 @@ public class FakePrinterInfo implements BasePrinterInfo {
     public String getPrinterId() {
         return printerId;
     }
+
 }

@@ -42,10 +42,12 @@ public abstract class PrinterDriverFactory {
         String printerId = printerInfo.getPrinterId();
         synchronized (printerDrivers) {
             PrinterDriverBase printerDriver = printerDrivers.get(printerId);
-            if (printerDriver == null) {
+
+            if (printerDriver == null || !printerDriver.getPrinterInfo().sameAddressAndPrinter(printerInfo)) {
                 printerDriver = createPrinterDriver(printerInfo);
                 printerDrivers.put(printerId, printerDriver);
             }
+
             return printerDriver;
         }
     }
