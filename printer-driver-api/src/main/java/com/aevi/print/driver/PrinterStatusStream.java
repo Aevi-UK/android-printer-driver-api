@@ -14,6 +14,7 @@
 package com.aevi.print.driver;
 
 import com.aevi.print.model.PrinterStatus;
+import com.aevi.print.model.PrintingContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,12 +27,6 @@ import io.reactivex.subjects.PublishSubject;
 public class PrinterStatusStream {
 
     private static final Map<String, PublishSubject<PrinterStatus>> PRINTER_STATUS_STREAM_MAP = new HashMap<>();
-
-    private final BasePrinterStatusService service;
-
-    public PrinterStatusStream(BasePrinterStatusService service) {
-        this.service = service;
-    }
 
     public static void emitStatus(String printerId, String printerStatus) {
         if (PRINTER_STATUS_STREAM_MAP.containsKey(printerId)) {
@@ -47,7 +42,7 @@ public class PrinterStatusStream {
         }
     }
 
-    protected void subscribeToStatus(final String clientId, final String printerId) {
+    protected void subscribeToStatus(final PrintingContext printingContext, final String printerId) {
         synchronized (PRINTER_STATUS_STREAM_MAP) {
             PublishSubject<PrinterStatus> printerStatusStream;
             if (PRINTER_STATUS_STREAM_MAP.containsKey(printerId)) {
@@ -67,7 +62,7 @@ public class PrinterStatusStream {
 
                 @Override
                 public void onNext(@NonNull PrinterStatus printerStatus) {
-                    if (!service.sendMessageToClient(clientId, printerStatus.toJson())) {
+                    if (!printingContext.send(printerStatus.toJson())) {
                         disposable.dispose();
                     }
                 }
@@ -83,7 +78,7 @@ public class PrinterStatusStream {
                 }
 
                 private void finish() {
-                    service.sendEndStreamMessageToClient(clientId);
+                    printingContext.sendEndStream();
                     disposable.dispose();
                 }
             });

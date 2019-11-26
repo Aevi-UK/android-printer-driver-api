@@ -13,23 +13,38 @@
  */
 package com.aevi.print.driver;
 
-import com.aevi.android.rxmessenger.service.AbstractMessengerService;
+import com.aevi.android.rxmessenger.ChannelServer;
+import com.aevi.android.rxmessenger.service.AbstractChannelService;
+import com.aevi.print.model.ChannelPrintingContext;
+import com.aevi.print.model.PrintingContext;
+
+import io.reactivex.functions.Consumer;
 
 /**
  * This abstract service should be extended to provide a print driver status implementation
  *
  * @see com.aevi.print.driver.common.service.CommonPrinterStatusService
  */
-public abstract class BasePrinterStatusService extends AbstractMessengerService {
+public abstract class BasePrinterStatusService extends AbstractChannelService {
 
     private final PrinterStatusStream printerStatusStream;
 
     protected BasePrinterStatusService() {
-        printerStatusStream = new PrinterStatusStream(this);
+        printerStatusStream = new PrinterStatusStream();
     }
 
     @Override
-    protected void handleRequest(String clientId, String statusRequest, String packageName) {
-        printerStatusStream.subscribeToStatus(clientId, statusRequest);
+    protected void onNewClient(ChannelServer channelServer, final String callingPackageName) {
+        final PrintingContext printingContext = new ChannelPrintingContext(channelServer);
+        channelServer.subscribeToMessages().subscribe(new Consumer<String>() {
+            @Override
+            public void accept(String statusRequest) {
+                handleRequest(printingContext, statusRequest, callingPackageName);
+            }
+        });
+    }
+
+    public void handleRequest(PrintingContext printingContext, String statusRequest, String packageName) {
+        printerStatusStream.subscribeToStatus(printingContext, statusRequest);
     }
 }

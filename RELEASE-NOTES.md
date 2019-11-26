@@ -1,5 +1,12 @@
 ## Release Notes for the AEVI Printer Driver API
 
+## Version 2.0.0
+
+* Update internal JSON classes to use general purpose AEVI json-utils library in favour of local classes. 
+* Update underlying rx-messenger library to v5.0.2.
+* Upgraded the build tools.
+* Upgrade demo drivers to androidx.
+
 ## Version 1.1.3
 
 * Added framework classes to aid developers wishing to build a printer driver

@@ -20,6 +20,7 @@ import com.aevi.print.driver.PrinterStatusStream;
 import com.aevi.print.driver.common.PrinterDriverFactory;
 import com.aevi.print.model.BasePrinterInfo;
 import com.aevi.print.model.PrinterMessages;
+import com.aevi.print.model.PrintingContext;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
@@ -57,14 +58,14 @@ public abstract class CommonPrinterActionService extends BasePrinterActionServic
     /**
      * The implementation method that responds to the printer action
      *
-     * @param clientId  the unique client id
-     * @param printerId the unique printer id that identifies the printer
-     * @param action    the printer action to perform
+     * @param printingContext the printing context
+     * @param printerId       the unique printer id that identifies the printer
+     * @param action          the printer action to perform
      */
     @Override
-    protected void action(String clientId, String printerId, final String action) {
+    protected void action(PrintingContext printingContext, String printerId, final String action) {
         checkNotNull(printerDriverFactory, "setPrinterDriverFactory must be set before the action method is called");
-        Log.d(TAG, "Got action request: " + clientId);
+        Log.d(TAG, "Got action request: " + printingContext);
 
         if (action == null) {
             Log.e(TAG, "Action request cannot be null");
@@ -86,6 +87,5 @@ public abstract class CommonPrinterActionService extends BasePrinterActionServic
                 printerDriverFactory.getPrinterDriver(printerInfo).sendPrinterAction(action);
             }
         }).subscribeOn(Schedulers.newThread()).subscribe();
-
     }
 }

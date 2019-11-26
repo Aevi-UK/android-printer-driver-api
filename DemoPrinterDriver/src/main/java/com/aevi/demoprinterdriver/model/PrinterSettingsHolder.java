@@ -36,7 +36,7 @@ public class PrinterSettingsHolder {
 
     public PrinterSettings[] getPrinterSettings() {
         return new PrinterSettings[]{
-                new PrinterSettingsBuilder("DemoPrinter:" + Build.SERIAL, 80, 75, 7.68f)
+                new PrinterSettingsBuilder("DemoPrinter:" + Build.ID, 80, 75, 7.68f)
                         .withPaperKind(PaperKind.STANDARD)
                         .build()
         };

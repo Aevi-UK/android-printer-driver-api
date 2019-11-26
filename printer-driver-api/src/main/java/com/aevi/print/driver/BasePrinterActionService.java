@@ -13,25 +13,36 @@
  */
 package com.aevi.print.driver;
 
-import com.aevi.android.rxmessenger.service.AbstractMessengerService;
+import com.aevi.android.rxmessenger.ChannelServer;
+import com.aevi.android.rxmessenger.service.AbstractChannelService;
+import com.aevi.print.model.ChannelPrintingContext;
 import com.aevi.print.model.PrintAction;
+import com.aevi.print.model.PrintingContext;
+
+import io.reactivex.functions.Consumer;
 
 /**
  * This abstract service should be extended to provide a print action handler service implementation
  *
  * @see com.aevi.print.driver.common.service.CommonPrinterActionService
  */
-public abstract class BasePrinterActionService extends AbstractMessengerService {
+public abstract class BasePrinterActionService extends AbstractChannelService {
 
     @Override
-    protected void handleRequest(String clientId, String actionData, String packageName) {
-        PrintAction action = PrintAction.fromJson(actionData);
-        action(clientId, action.getPrinterId(), action.getAction());
+    protected void onNewClient(ChannelServer channelServer, final String callingPackageName) {
+        final PrintingContext printingContext = new ChannelPrintingContext(channelServer);
+        channelServer.subscribeToMessages().subscribe(new Consumer<String>() {
+            @Override
+            public void accept(String actionData) {
+                PrintAction action = PrintAction.fromJson(actionData);
+                action(printingContext, action.getPrinterId(), action.getAction());
+            }
+        });
     }
 
-    protected abstract void action(String clientId, String printerId, String action);
+    protected abstract void action(PrintingContext printingContext, String printerId, String action);
 
-    protected void actionComplete(String clientId) {
-        sendEndStreamMessageToClient(clientId);
+    protected void actionComplete(PrintingContext printingContext) {
+        printingContext.sendEndStream();
     }
 }

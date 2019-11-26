@@ -25,7 +25,7 @@ repositories section.
 And then add to your dependencies section
 
 ```
-implementation 'com.aevi.print:printer-driver-api:1.1.3'
+implementation 'com.aevi.print:printer-driver-api:2.0.0'
 
 ```
 

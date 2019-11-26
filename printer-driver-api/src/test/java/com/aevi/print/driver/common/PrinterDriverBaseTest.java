@@ -20,6 +20,7 @@ import com.aevi.print.model.PrintJob;
 import com.aevi.print.model.PrintPayload;
 import com.aevi.print.model.PrinterMessages;
 import com.aevi.print.model.PrinterStatus;
+import com.aevi.print.model.PrintingContext;
 import com.aevi.print.model.TextRow;
 
 import org.junit.Before;
@@ -33,7 +34,6 @@ import java.util.List;
 import io.reactivex.observers.TestObserver;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -44,9 +44,12 @@ public class PrinterDriverBaseTest {
     BasePrinterInfo printerInfo;
 
     PrinterDriverImplementation printerDriverImpl;
+
+    @Mock
+    PrintingContext mockPrintingContext;
+
     @Mock
     private BasePrinterStatusService mockPrinterStatusService;
-
     private MyPrinterStatusStream printerStatusStream;
 
     @Before
@@ -55,8 +58,8 @@ public class PrinterDriverBaseTest {
         initMocks(this);
 
         when(printerInfo.getPrinterId()).thenReturn("ID-1");
-        printerStatusStream = new MyPrinterStatusStream(mockPrinterStatusService);
-        printerStatusStream.subscribeToStatus("ClientID", "ID-1");
+        printerStatusStream = new MyPrinterStatusStream();
+        printerStatusStream.subscribeToStatus(mockPrintingContext, "ID-1");
 
         printerDriverImpl = new PrinterDriverImplementation(printerInfo);
     }
@@ -145,7 +148,6 @@ public class PrinterDriverBaseTest {
 
     @Test
     public void onActionFailedDisconnectsAutomaticallyAndSendsAStatusMessage() {
-
         printerDriverImpl.setAutomaticOnPrinterConnected();
         printerDriverImpl.setAutomaticOnActionFailed("Action-Failed");
 
@@ -156,7 +158,7 @@ public class PrinterDriverBaseTest {
         assertThat(printerDriverImpl.executePrintActionTaskCounter).isEqualTo(1);
         assertThat(printerDriverImpl.disconnectFromPrinterCounter).isEqualTo(1);
 
-        verifyStatusWasSent("ClientID", "Action-Failed");
+        verifyStatusWasSent(mockPrintingContext, "Action-Failed");
     }
 
     @Test
@@ -323,21 +325,16 @@ public class PrinterDriverBaseTest {
         assertThat(printJob.getFailedReason()).isEqualTo(failedReason);
     }
 
-    private void verifyStatusWasSent(String requestId, String status) {
+    private void verifyStatusWasSent(PrintingContext printingContext, String status) {
         ArgumentCaptor<String> printerStatusArgumentCaptor = ArgumentCaptor.forClass(String.class);
-        verify(mockPrinterStatusService).sendMessageToClient(eq(requestId), printerStatusArgumentCaptor.capture());
+        verify(printingContext).send(printerStatusArgumentCaptor.capture());
         assertThat(PrinterStatus.fromJson(printerStatusArgumentCaptor.getValue()).getStatus()).isEqualTo(status);
     }
 
     class MyPrinterStatusStream extends PrinterStatusStream {
-
-        public MyPrinterStatusStream(BasePrinterStatusService service) {
-            super(service);
-        }
-
         @Override
-        public void subscribeToStatus(final String clientId, final String printerId) {
-            super.subscribeToStatus(clientId, printerId);
+        public void subscribeToStatus(final PrintingContext printingContext, final String printerId) {
+            super.subscribeToStatus(printingContext, printerId);
         }
     }
 }

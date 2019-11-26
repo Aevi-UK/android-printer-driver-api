@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.robolectric.shadows.ShadowLog;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -62,9 +63,20 @@ public class PrinterDriverFactoryTest {
 
     @Test
     public void theSameInstanceOfPrinterDriverBaseIsUsed() {
+        when(printerInfo1.sameAddressAndPrinter(any(BasePrinterInfo.class))).thenReturn(true);
+        when(printerInfo2.sameAddressAndPrinter(any(BasePrinterInfo.class))).thenReturn(true);
         PrinterDriverBase printerDriverBase1 = printerDriverFactory.getPrinterDriver(printerInfo1);
         PrinterDriverBase printerDriverBase2 = printerDriverFactory.getPrinterDriver(printerInfo1);
         assertThat(printerDriverBase1).isSameAs(printerDriverBase2);
+    }
+
+    @Test
+    public void theSameInstanceOfPrinterDriverBaseIsNotUsed() {
+        when(printerInfo1.sameAddressAndPrinter(any(BasePrinterInfo.class))).thenReturn(false);
+        when(printerInfo2.sameAddressAndPrinter(any(BasePrinterInfo.class))).thenReturn(false);
+        PrinterDriverBase printerDriverBase1 = printerDriverFactory.getPrinterDriver(printerInfo1);
+        PrinterDriverBase printerDriverBase2 = printerDriverFactory.getPrinterDriver(printerInfo1);
+        assertThat(printerDriverBase1).isNotSameAs(printerDriverBase2);
     }
 
     @Test
@@ -81,5 +93,4 @@ public class PrinterDriverFactoryTest {
         PrinterDriverBase printerDriverBase2 = printerDriverFactory.getPrinterDriver(printerInfo1);
         assertThat(printerDriverBase1).isNotSameAs(printerDriverBase2);
     }
-
 }

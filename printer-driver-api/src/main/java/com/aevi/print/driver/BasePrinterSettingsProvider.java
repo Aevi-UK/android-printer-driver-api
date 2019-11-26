@@ -16,15 +16,14 @@ package com.aevi.print.driver;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.aevi.print.json.JsonConverter;
 import com.aevi.print.model.DriverProperties;
 import com.aevi.print.model.PrinterSettings;
 import com.aevi.print.model.PrinterSettingsList;
+import com.aevi.util.json.JsonConverter;
 
 /**
  * ContentProvider base class that should be extended by printer driver providers in order to give information as to the capabilities of printers.
@@ -84,7 +83,7 @@ public abstract class BasePrinterSettingsProvider extends ContentProvider {
                 b.putString(CONFIGURATION_KEY, JsonConverter.serialize(new PrinterSettingsList(getPrintersSettings())));
                 break;
             case METHOD_DRIVER_PROPERTIES:
-                b.putString(PROPERTIES_KEY,  JsonConverter.serialize(getDriverProperties()));
+                b.putString(PROPERTIES_KEY, JsonConverter.serialize(getDriverProperties()));
                 break;
         }
         return b;

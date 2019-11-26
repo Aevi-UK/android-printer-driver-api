@@ -13,28 +13,39 @@
  */
 package com.aevi.print.driver;
 
-import com.aevi.android.rxmessenger.service.AbstractMessengerService;
+import com.aevi.android.rxmessenger.ChannelServer;
+import com.aevi.android.rxmessenger.service.AbstractChannelService;
+import com.aevi.print.model.ChannelPrintingContext;
 import com.aevi.print.model.PrintJob;
 import com.aevi.print.model.PrintPayload;
+import com.aevi.print.model.PrintingContext;
+
+import io.reactivex.functions.Consumer;
 
 /**
  * This abstract service should be extended to provide a print driver service implementation
  *
  * @see com.aevi.print.driver.common.service.CommonPrinterDriverService
  */
-public abstract class BasePrinterDriverService extends AbstractMessengerService {
+public abstract class BasePrinterDriverService extends AbstractChannelService {
 
     @Override
-    protected void handleRequest(String clientId, String payload, String packageName) {
-        print(clientId, PrintPayload.fromJson(payload));
+    protected void onNewClient(ChannelServer channelServer, final String callingPackageName) {
+        PrintingContext printingContext = new ChannelPrintingContext(channelServer);
+        channelServer.subscribeToMessages().subscribe(new Consumer<String>() {
+            @Override
+            public void accept(String payload) {
+                print(printingContext, PrintPayload.fromJson(payload));
+            }
+        });
     }
 
-    protected abstract void print(String clientId, PrintPayload payload);
+    protected abstract void print(PrintingContext printingContext, PrintPayload payload);
 
-    protected void sendResponse(String clientId, PrintJob printJob) {
-        sendMessageToClient(clientId, printJob.toJson());
+    protected void sendResponse(PrintingContext printingContext, PrintJob printJob) {
+        printingContext.send(printJob.toJson());
         if (printJob.getPrintJobState() == PrintJob.State.FAILED || printJob.getPrintJobState() == PrintJob.State.PRINTED) {
-            sendEndStreamMessageToClient(clientId);
+            printingContext.sendEndStream();
         }
     }
 }

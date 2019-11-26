@@ -15,9 +15,11 @@ package com.aevi.demoprinterdriver.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.print.PrintHelper;
+import androidx.print.PrintHelper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -30,21 +32,21 @@ import com.aevi.print.model.PrintJob;
 import com.aevi.print.model.PrintPayload;
 import com.aevi.print.model.PrinterSettings;
 
+import java.util.List;
 import java.util.UUID;
 
-import static android.support.v4.print.PrintHelper.COLOR_MODE_MONOCHROME;
-import static android.support.v4.print.PrintHelper.ORIENTATION_PORTRAIT;
-import static android.support.v4.print.PrintHelper.OnPrintFinishCallback;
-import static android.support.v4.print.PrintHelper.SCALE_MODE_FIT;
+import static androidx.print.PrintHelper.COLOR_MODE_MONOCHROME;
+import static androidx.print.PrintHelper.ORIENTATION_PORTRAIT;
+import static androidx.print.PrintHelper.OnPrintFinishCallback;
+import static androidx.print.PrintHelper.SCALE_MODE_FIT;
 import static com.aevi.print.model.PrintJob.State.PRINTED;
 import static com.aevi.print.model.PrinterMessages.ERROR_PRINT_FAILED;
 
 public class AndroidPrintActivity extends Activity {
 
-    private static final String TAG = AndroidPrintActivity.class.getSimpleName();
-
     public static final String KEY_PAYLOAD = "payload";
     public static final String KEY_PRINTER_SETTINGS = "settings";
+    private static final String TAG = AndroidPrintActivity.class.getSimpleName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,13 +73,32 @@ public class AndroidPrintActivity extends Activity {
             return;
         }
 
-        try {
-            String jobName = UUID.randomUUID().toString();
-            handleSimplePrint(payload, printerSettings, resultHelper, jobName);
-        } catch (Throwable t) {
-            // YES we are catching all exceptions here
-            Log.e(TAG, "Failed to print via Android", t);
-            resultHelper.returnError(new MessageException(ERROR_PRINT_FAILED, t.getMessage()));
+        if (isAndroidPrintServiceInstalled()) {
+            try {
+                String jobName = UUID.randomUUID().toString();
+                handleSimplePrint(payload, printerSettings, resultHelper, jobName);
+            } catch (Throwable t) {
+                // YES we are catching all exceptions here
+                Log.e(TAG, "Failed to print via Android", t);
+                resultHelper.sendErrorToClient(new MessageException(ERROR_PRINT_FAILED, t.getMessage()));
+            }
+        } else {
+            resultHelper.sendErrorToClient(new MessageException(ERROR_PRINT_FAILED, "Android print service is unavailable"));
+            finish();
+        }
+    }
+
+    public boolean isAndroidPrintServiceInstalled() {
+
+        PackageManager packageManager = getPackageManager();
+        List<ResolveInfo> resolveInfo = packageManager.queryIntentServices(new Intent("android.printservice.PrintService"), 0);
+
+        if (resolveInfo != null && resolveInfo.size() > 0) {
+            Log.i(TAG, "Android print service is available");
+            return true;
+        } else {
+            Log.i(TAG, "Android print service is unavailable");
+            return false;
         }
     }
 
@@ -91,7 +112,7 @@ public class AndroidPrintActivity extends Activity {
         helper.printBitmap(jobName, printBitmap, new OnPrintFinishCallback() {
             @Override
             public void onFinish() {
-                resultHelper.publishResponse(new PrintJob(PRINTED));
+                resultHelper.sendMessageToClient(new PrintJob(PRINTED));
                 printBitmap.recycle();
                 finish();
             }
