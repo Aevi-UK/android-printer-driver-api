@@ -3,10 +3,8 @@ ext {
     projectTargetSdkVersion = 28
     projectMinSdkVersion = 22
 
-    butterKnifeVersion = '9.0.0'
-    recyclerViewVersion = '28.0.0'
-    supportLibrary = '28.0.0'
-    designLibrary = '28.0.0'
+    butterKnifeVersion = '10.0.0'
+    androidxLibrary = '1.0.0'
 
     rxJavaVersion = '2.2.2'
     rxMessengerVersion = '5.0.2'
@@ -19,15 +17,15 @@ ext {
     androidMockableVersion = '26'
     robolectricVersion = '3.3.2'
 
-    printApiVersion = '1.1.5-RC2'
+    printApiVersion = '1.1.5'
 
     presentationDependencies = [
             butterKnife      : "com.jakewharton:butterknife:$butterKnifeVersion",
-            support          : "com.android.support:support-v4:$supportLibrary",
-            recyclerView     : "com.android.support:recyclerview-v7:$recyclerViewVersion",
-            appCompat        : "com.android.support:appcompat-v7:$supportLibrary",
-            supportAnnotation: "com.android.support:support-annotations:$supportLibrary",
-            design           : "com.android.support:design:$designLibrary",
+            support          : "androidx.legacy:legacy-support-v4:$androidxLibrary",
+            recyclerView     : "androidx.recyclerview:recyclerview:$androidxLibrary",
+            appCompat        : "androidx.appcompat:appcompat:$androidxLibrary",
+            supportAnnotation: "androidx.annotation:annotation:$androidxLibrary",
+            design           : "com.google.android.material:material:$androidxLibrary",
     ]
 
     domainDependencies = [

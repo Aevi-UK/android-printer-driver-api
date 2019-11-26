@@ -13,7 +13,7 @@
  */
 package com.aevi.print.driver.common;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.aevi.print.driver.PrinterStatusStream;

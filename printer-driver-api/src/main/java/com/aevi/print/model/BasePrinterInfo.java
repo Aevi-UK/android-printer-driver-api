@@ -21,7 +21,24 @@ public interface BasePrinterInfo {
 
     /**
      * This printer ID should be unique for each physical printer that this driver locates
+     *
      * @return A unique printer ID
      */
     String getPrinterId();
+
+    /**
+     * Tests if the same printer is located at the same address
+     *
+     * @param anotherPrinter    the other printer used to make the comparison
+     * @return                  true when the same printer is at the same address (often the IP address)
+     */
+    default boolean sameAddressAndPrinter(BasePrinterInfo anotherPrinter) {
+
+        if (getPrinterId() == null || anotherPrinter == null) {
+            return false;
+        }
+
+        return getPrinterId().equals(anotherPrinter.getPrinterId());
+    }
+
 }

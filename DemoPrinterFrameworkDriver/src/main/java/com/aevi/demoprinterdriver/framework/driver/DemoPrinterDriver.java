@@ -13,7 +13,7 @@
  */
 package com.aevi.demoprinterdriver.framework.driver;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.aevi.demoprinterdriver.framework.model.DemoPrinterInfo;
 import com.aevi.print.driver.common.PrinterDriverBase;
