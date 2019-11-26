@@ -17,7 +17,8 @@ bintray {
         userOrg = 'aevi'
         repo = 'aevi-uk'
 
-        name = 'android-printer-driver-api'
+        //The 'com.aevi.print:print-api' and 'com.aevi.print:printer-driver-api' poms both use this same bintray package name
+        name = 'android-pos-print-api'
 
         licenses = ['Apache-2.0']
         labels = ['printing', 'receipt', 'POS', 'android']
